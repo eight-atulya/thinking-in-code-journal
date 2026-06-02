@@ -407,6 +407,7 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
     .brand {{ display: grid; gap: 8px; margin-bottom: 18px; }}
     .brand strong {{ font-size: 1.02rem; line-height: 1.2; }}
     .brand span {{ color: var(--muted); font-size: .86rem; }}
+    .mobile-menu-toggle {{ display: none; }}
     .controls {{ display: grid; gap: 10px; margin: 20px 0; }}
     input[type="search"] {{
       width: 100%; border: 1px solid var(--line); border-radius: var(--radius);
@@ -592,8 +593,26 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
     dialog textarea {{ width: 100%; height: 55vh; background: #050505; color: #f7f7f7; border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; }}
     @media (max-width: 900px) {{
       .layout {{ grid-template-columns: 1fr; }}
-      aside {{ position: relative; height: auto; }}
-      .hero {{ min-height: 68vh; }}
+      aside {{
+        position: sticky; top: 0; z-index: 60; height: auto; max-height: 72px; overflow: hidden;
+        border-right: 0; border-bottom: 1px solid var(--line); padding: 12px 14px;
+      }}
+      aside.mobile-open {{ max-height: 82vh; overflow: auto; box-shadow: var(--shadow); }}
+      .brand {{
+        grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; margin-bottom: 0;
+      }}
+      .brand span {{ display: none; }}
+      .mobile-menu-toggle {{ display: inline-flex; align-items: center; justify-content: center; min-width: 78px; }}
+      aside:not(.mobile-open) .controls,
+      aside:not(.mobile-open) .score-panel,
+      aside:not(.mobile-open) nav {{ display: none; }}
+      aside.mobile-open .controls {{ margin-top: 14px; }}
+      .hero {{ min-height: 64vh; padding-top: 54px; }}
+      .hero h1 {{ font-size: clamp(3rem, 16vw, 5rem); }}
+      .hero p {{ font-size: 1rem; }}
+      .signal-strip {{ gap: 8px; margin-top: 22px; }}
+      .signal-strip::before {{ flex-basis: 100%; }}
+      .journal {{ padding-top: 18px; }}
       .section-toggle {{ position: static; margin: 14px 0 0 14px; }}
       .knowledge-link {{ grid-template-columns: 1fr; }}
       .knowledge-arrow {{ text-align: center; transform: rotate(90deg); }}
@@ -621,6 +640,7 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
       <div class="brand">
         <strong>Thinking in Code</strong>
         <span>Programming Journal by Anurag Atulya + Codex + Eight</span>
+        <button id="mobileMenuToggle" class="mobile-menu-toggle" type="button" aria-expanded="false">Menu</button>
       </div>
       <div class="controls">
         <input id="search" type="search" placeholder="Search journal...">
@@ -629,7 +649,7 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
           <button id="compactToggle" type="button">Compact</button>
         </div>
         <div class="button-row">
-          <button id="expandAll" type="button">Expand</button>
+          <button id="expandAll" type="button">Open all</button>
           <button id="sourceOpen" type="button">Source</button>
         </div>
         <div class="button-row">
@@ -1163,6 +1183,41 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
       }});
     }});
 
+    function setSectionCollapsed(section, collapsed) {{
+      section.classList.toggle('collapsed', collapsed);
+      const button = section.querySelector('.section-toggle');
+      if (button) button.textContent = collapsed ? 'Open' : 'Collapse';
+    }}
+
+    function collapseForOverview() {{
+      document.querySelectorAll('.entry-section').forEach((section, index) => {{
+        if (index === 0) return setSectionCollapsed(section, false);
+        setSectionCollapsed(section, true);
+      }});
+      document.getElementById('expandAll').textContent = 'Open all';
+    }}
+
+    function openSectionFromLink(hash) {{
+      let section = null;
+      try {{
+        section = hash ? document.getElementById(decodeURIComponent(hash.slice(1))) : null;
+      }} catch {{
+        section = null;
+      }}
+      if (!section) return;
+      section.classList.remove('hidden');
+      setSectionCollapsed(section, false);
+      document.querySelector('aside')?.classList.remove('mobile-open');
+      const mobileButton = document.getElementById('mobileMenuToggle');
+      if (mobileButton) {{
+        mobileButton.textContent = 'Menu';
+        mobileButton.setAttribute('aria-expanded', 'false');
+      }}
+    }}
+
+    collapseForOverview();
+    if (location.hash) openSectionFromLink(location.hash);
+
     document.querySelectorAll('.copy-code').forEach(button => {{
       button.addEventListener('click', async () => {{
         const code = button.parentElement.querySelector('code').innerText;
@@ -1181,9 +1236,13 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
       document.body.classList.toggle('compact');
       e.currentTarget.textContent = document.body.classList.contains('compact') ? 'Roomy' : 'Compact';
     }});
-    document.getElementById('expandAll').addEventListener('click', () => {{
-      document.querySelectorAll('.entry-section').forEach(section => section.classList.remove('collapsed', 'hidden'));
-      document.querySelectorAll('.section-toggle').forEach(button => button.textContent = 'Collapse');
+    document.getElementById('expandAll').addEventListener('click', e => {{
+      const shouldOpen = e.currentTarget.textContent !== 'Collapse all';
+      document.querySelectorAll('.entry-section').forEach(section => {{
+        section.classList.remove('hidden');
+        setSectionCollapsed(section, !shouldOpen);
+      }});
+      e.currentTarget.textContent = shouldOpen ? 'Collapse all' : 'Open all';
       document.getElementById('search').value = '';
     }});
     document.getElementById('sourceOpen').addEventListener('click', () => document.getElementById('sourceDialog').showModal());
@@ -1192,12 +1251,29 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
     search.addEventListener('input', () => {{
       const q = search.value.trim().toLowerCase();
       document.querySelectorAll('.entry-section').forEach(section => {{
-        section.classList.toggle('hidden', q && !section.innerText.toLowerCase().includes(q));
+        const match = !q || section.innerText.toLowerCase().includes(q);
+        section.classList.toggle('hidden', !match);
+        if (q && match) setSectionCollapsed(section, false);
       }});
     }});
 
     const links = [...toc.querySelectorAll('a')];
-    const sections = links.map(link => document.querySelector(link.getAttribute('href'))).filter(Boolean);
+    links.forEach(link => link.addEventListener('click', () => openSectionFromLink(link.getAttribute('href'))));
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    mobileMenuToggle.addEventListener('click', () => {{
+      const aside = document.querySelector('aside');
+      const open = !aside.classList.contains('mobile-open');
+      aside.classList.toggle('mobile-open', open);
+      mobileMenuToggle.textContent = open ? 'Close' : 'Menu';
+      mobileMenuToggle.setAttribute('aria-expanded', String(open));
+    }});
+    window.addEventListener('hashchange', () => openSectionFromLink(location.hash));
+
+    const sectionForHash = hash => {{
+      try {{ return hash ? document.getElementById(decodeURIComponent(hash.slice(1))) : null; }}
+      catch {{ return null; }}
+    }};
+    const sections = links.map(link => sectionForHash(link.getAttribute('href'))).filter(Boolean);
     const observer = new IntersectionObserver(entries => {{
       entries.forEach(entry => {{
         if (entry.isIntersecting) {{
