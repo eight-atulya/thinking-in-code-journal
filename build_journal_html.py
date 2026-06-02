@@ -445,22 +445,45 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
     nav a.active {{ border-left-color: var(--red); background: rgba(255,45,45,.1); color: var(--white); }}
     main {{ min-width: 0; }}
     .hero {{
-      min-height: 88vh; display: grid; align-items: end; padding: 72px clamp(24px, 6vw, 92px) 40px;
+      min-height: 78vh; display: grid; align-items: end; padding: 72px clamp(24px, 6vw, 92px) 52px;
       border-bottom: 1px solid var(--line); position: relative; overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(6,6,6,.1), rgba(6,6,6,.72)),
+        radial-gradient(circle at 74% 18%, rgba(255,210,31,.13), transparent 26%),
+        radial-gradient(circle at 18% 12%, rgba(255,45,45,.2), transparent 31%);
     }}
     .hero::before {{
-      content: ""; position: absolute; inset: 0; opacity: .45;
+      content: ""; position: absolute; inset: 0; opacity: .32;
       background-image:
         linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
       background-size: 42px 42px; mask-image: linear-gradient(to bottom, black, transparent 78%);
     }}
-    .hero-content {{ position: relative; max-width: 980px; }}
-    .kicker {{ color: var(--yellow); text-transform: uppercase; font-weight: 900; letter-spacing: .12em; font-size: .78rem; }}
-    .hero h1 {{ margin: 12px 0; font-size: clamp(2.7rem, 8vw, 7rem); line-height: .92; letter-spacing: 0; }}
-    .hero p {{ color: var(--muted); font-size: clamp(1rem, 2vw, 1.32rem); max-width: 760px; }}
-    .signal-strip {{ display: flex; gap: 8px; margin-top: 24px; flex-wrap: wrap; }}
-    .signal-strip span {{ border: 1px solid var(--line); padding: 6px 9px; border-radius: 999px; background: var(--panel); }}
+    .hero-content {{ position: relative; max-width: 1040px; }}
+    .kicker {{ color: var(--yellow); text-transform: uppercase; font-weight: 900; letter-spacing: .14em; font-size: .76rem; }}
+    .hero h1 {{ margin: 14px 0 18px; font-size: clamp(3rem, 7.4vw, 6.35rem); line-height: .9; letter-spacing: 0; max-width: 980px; }}
+    .hero p {{ color: var(--muted); color: color-mix(in srgb, var(--text) 78%, var(--muted)); font-size: clamp(1.05rem, 1.85vw, 1.42rem); max-width: 780px; line-height: 1.55; }}
+    .signal-strip {{
+      display: flex; gap: 10px; margin-top: 30px; flex-wrap: wrap; align-items: center;
+      max-width: 820px;
+    }}
+    .signal-strip::before {{
+      content: "Mental model";
+      color: var(--muted); font-size: .72rem; font-weight: 900; text-transform: uppercase;
+      letter-spacing: .12em; margin-right: 2px;
+    }}
+    .signal-strip span {{
+      display: inline-flex; align-items: center; justify-content: center; min-height: 34px;
+      border: 1px solid rgba(255,255,255,.16); padding: 6px 12px; border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.09), 0 10px 24px rgba(0,0,0,.18);
+      color: var(--text); font-weight: 800; font-size: .86rem; line-height: 1;
+    }}
+    .signal-strip span:nth-child(1), .signal-strip span:nth-child(2) {{
+      width: 34px; padding-inline: 0; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      color: var(--yellow); border-color: rgba(255,210,31,.34);
+    }}
+    .signal-strip span:last-child {{ border-color: rgba(255,45,45,.36); }}
     .journal {{ padding: 36px clamp(18px, 5vw, 84px) 96px; }}
     .entry-section {{
       position: relative; margin: 0 auto 28px; max-width: 980px; background: rgba(16,16,16,.82);
@@ -471,6 +494,19 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
     .section-toggle {{ position: absolute; top: 14px; right: 14px; z-index: 2; font-size: .78rem; padding: 5px 8px; }}
     .entry-section.collapsed .entry-inner > *:not(h1):not(h2) {{ display: none; }}
     .entry-section.hidden {{ display: none; }}
+    #thinking-in-code-from-zero-to-ai-native-systems-builder {{
+      max-width: 980px; background: linear-gradient(135deg, rgba(255,210,31,.08), rgba(255,45,45,.06));
+    }}
+    #thinking-in-code-from-zero-to-ai-native-systems-builder .entry-inner {{ padding: clamp(20px, 3vw, 34px); }}
+    #thinking-in-code-from-zero-to-ai-native-systems-builder h1 {{
+      font-size: clamp(1.45rem, 2.7vw, 2.35rem); margin: 0 0 10px; max-width: 760px;
+    }}
+    #thinking-in-code-from-zero-to-ai-native-systems-builder h3 {{
+      margin: 0 0 18px; font-size: clamp(.98rem, 1.7vw, 1.2rem); color: var(--yellow);
+    }}
+    #thinking-in-code-from-zero-to-ai-native-systems-builder p {{
+      max-width: 880px; margin: 8px 0; color: var(--muted); font-size: .98rem;
+    }}
     h1, h2, h3, h4 {{ line-height: 1.08; letter-spacing: 0; }}
     h1 a, h2 a, h3 a, h4 a {{ color: inherit; text-decoration: none; }}
     h1 {{ font-size: clamp(2.1rem, 5vw, 4.8rem); margin: 0 0 24px; }}
@@ -624,9 +660,9 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
     <main>
       <header class="hero">
         <div class="hero-content">
-          <div class="kicker">Silicon -> Code -> Control -> AI</div>
+          <div class="kicker">Interactive journal for future builders</div>
           <h1>Thinking in Code</h1>
-          <p>A self-contained interactive programming journal about machines, feedback, language, and AI-native systems.</p>
+          <p>Learn programming as the language of machines: from bits and control flow to production systems, feedback loops, and AI-native engineering.</p>
           <div class="signal-strip"><span>0</span><span>1</span><span>state</span><span>flow</span><span>feedback</span><span>agents</span></div>
         </div>
       </header>
