@@ -513,6 +513,23 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
     h1 {{ font-size: clamp(2.1rem, 5vw, 4.8rem); margin: 0 0 24px; }}
     h2 {{ font-size: clamp(1.6rem, 3.4vw, 3rem); margin: 0 0 24px; }}
     h3 {{ margin-top: 34px; color: var(--yellow); font-size: 1.23rem; }}
+    h3[id^="dream-lab"] {{
+      display: inline-flex; align-items: center; margin: 10px 0 12px; padding: 6px 10px;
+      border-radius: 999px; background: var(--yellow); color: #000; font-size: .82rem;
+      text-transform: uppercase; letter-spacing: .08em;
+    }}
+    h3[id^="dream-lab"] + p,
+    h3[id^="dream-lab"] + p + p,
+    h3[id^="dream-lab"] + p + p + p,
+    h3[id^="dream-lab"] + p + p + p + p {{
+      max-width: none; margin: 8px 0; padding: 10px 12px 10px 14px;
+      border-left: 3px solid var(--red); background: rgba(255,255,255,.035);
+      border-radius: 0 var(--radius) var(--radius) 0; line-height: 1.45;
+    }}
+    body.light h3[id^="dream-lab"] + p,
+    body.light h3[id^="dream-lab"] + p + p,
+    body.light h3[id^="dream-lab"] + p + p + p,
+    body.light h3[id^="dream-lab"] + p + p + p + p {{ background: rgba(255,210,31,.12); }}
     h4 {{ color: var(--white); }}
     p {{ max-width: 76ch; margin: 14px 0; }}
     strong {{ color: var(--white); }}
