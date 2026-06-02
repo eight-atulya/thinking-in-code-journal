@@ -592,23 +592,30 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
     .learning-check {{
       margin: 34px 0 0; border: 1px solid rgba(255,45,45,.42); border-radius: var(--radius);
       background: linear-gradient(135deg, rgba(255,45,45,.12), rgba(255,210,31,.08)); overflow: hidden;
+      max-width: 100%;
     }}
     .learning-check summary {{
       cursor: pointer; padding: 14px 16px; list-style: none; display: flex; align-items: center;
-      justify-content: space-between; gap: 12px; font-weight: 900;
+      justify-content: space-between; gap: 12px; font-weight: 900; min-width: 0;
     }}
     .learning-check summary::-webkit-details-marker {{ display: none; }}
-    .learning-check summary span {{ color: var(--yellow); font-size: .8rem; text-transform: uppercase; }}
+    .learning-check summary span {{ color: var(--yellow); font-size: .8rem; text-transform: uppercase; white-space: nowrap; }}
     .check-body {{ padding: 0 16px 16px; display: grid; gap: 16px; }}
-    .check-stage {{ border: 1px solid var(--line); background: var(--panel); border-radius: var(--radius); padding: 14px; }}
+    .check-stage {{
+      border: 1px solid var(--line); background: var(--panel); border-radius: var(--radius); padding: 14px;
+      min-width: 0; overflow-wrap: anywhere;
+    }}
     .check-stage h4 {{ margin: 0 0 8px; color: var(--yellow); }}
     .mcq-options {{ display: grid; gap: 8px; margin-top: 10px; }}
-    .mcq-options button {{ text-align: left; }}
+    .mcq-options button {{
+      width: 100%; min-width: 0; text-align: left; white-space: normal; overflow-wrap: anywhere;
+      line-height: 1.35; min-height: 44px; align-items: flex-start; justify-content: flex-start;
+    }}
     .mcq-options button.correct-choice {{ border-color: #28d17c; color: #28d17c; }}
     .mcq-options button.wrong-choice {{ border-color: var(--red); color: var(--red); }}
     .check-feedback {{ min-height: 1.4em; color: var(--muted); margin: 8px 0 0; }}
     .recall-box {{
-      width: 100%; min-height: 92px; resize: vertical; border: 1px solid var(--line);
+      display: block; width: 100%; max-width: 100%; min-height: 92px; resize: vertical; border: 1px solid var(--line);
       background: #050505; color: #f7f7f7; border-radius: var(--radius); padding: 10px; font: inherit;
     }}
     body.light .recall-box {{ background: #fff; color: #111; }}
@@ -647,6 +654,27 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
       .section-toggle {{ position: static; margin: 14px 0 0 14px; }}
       .knowledge-link {{ grid-template-columns: 1fr; }}
       .knowledge-arrow {{ text-align: center; transform: rotate(90deg); }}
+      .learning-check {{ margin-top: 24px; border-left: 0; border-right: 0; border-radius: 0; }}
+      .learning-check summary {{ padding: 13px 12px; align-items: flex-start; }}
+      .learning-check summary span {{ font-size: .68rem; line-height: 1.2; padding-top: 2px; }}
+      .check-body {{ padding: 0 10px 12px; gap: 10px; }}
+      .check-stage {{ padding: 12px; }}
+      .check-stage h4 {{ font-size: .92rem; line-height: 1.2; }}
+      .check-stage p {{ font-size: .95rem; line-height: 1.45; }}
+      .mcq-options {{ gap: 9px; }}
+      .mcq-options button, .check-stage > button, .button-row button, .confidence-row button {{
+        min-height: 46px; padding: 10px 12px; font-size: .92rem;
+      }}
+      .button-row {{ display: grid; grid-template-columns: 1fr; gap: 8px; }}
+      .confidence-row {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
+      .recall-box {{ min-height: 118px; font-size: 16px; }}
+    }}
+    @media (max-width: 430px) {{
+      .entry-inner {{ padding-left: 12px; padding-right: 12px; }}
+      .learning-check {{ margin-left: -12px; margin-right: -12px; }}
+      .learning-check summary {{ flex-wrap: wrap; gap: 6px; }}
+      .learning-check summary span {{ width: 100%; }}
+      .confidence-row {{ grid-template-columns: 1fr; }}
     }}
     @media print {{
       body {{ background: #fff; color: #000; }}

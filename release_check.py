@@ -29,6 +29,10 @@ REQUIRED_SNIPPETS = [
     "Transfer Boss Test",
     "rawMarkdown",
     "sourceDialog",
+    "@media (max-width: 430px)",
+    ".confidence-row { grid-template-columns: 1fr; }",
+    "overflow-wrap: anywhere",
+    "white-space: normal",
 ]
 
 
