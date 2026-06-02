@@ -607,6 +607,7 @@ The mission is not to make the journal bigger for the sake of size. The mission 
 
 ### Level 0 — Learning How to Learn Code
 - How to use this journal
+- How to publish one real page for free
 - How to practice
 - How to take notes
 - How to debug frustration
@@ -917,7 +918,8 @@ The best test is not "Can you recognize the answer?" The best test is "Can you b
 # 📚 JOURNAL MAP
 
 ## PART 0 — Learning How to Learn Programming
-- Entry 0: How to Use This Journal
+- Entry 0: Publish Your First Page for Free
+- Entry 0.0: How to Use This Journal
 - Entry 0.1: Memory, Logic, and Practice
 - Entry 0.2: Setting Up Your Computer
 - Entry 0.3: How to Use AI as a Tutor Without Cheating Yourself
@@ -1038,6 +1040,350 @@ The best test is not "Can you recognize the answer?" The best test is "Can you b
 - Capstone 10: Simulated Robot Controller With AI Explanation Layer
 
 > **Draft note:** The manuscript below is the first implemented slice of the larger roadmap. As new parts are expanded, entry numbers should be renumbered to match the complete table of contents.
+
+***
+
+# PART 0 — FIRST SHIP
+
+***
+
+## Entry 0: Publish Your First Page for Free
+
+### Dream Lab
+
+**The dream:** You want something with your name on the internet that other people can open.
+
+**The pressure:** Many learners spend weeks "learning coding" without ever shipping. That delays the feedback loop that makes programming feel real.
+
+**The unlock:** GitHub Pages lets you publish a static HTML page for free from a repository. Your first deployment teaches files, Git, hosting, URLs, cache, and debugging in one action.
+
+**Do this now:** Create one `index.html`, push it to GitHub, enable Pages, and open your public URL.
+
+### Senior Cut
+
+GitHub Pages is static hosting backed by a repository. If Pages is configured to publish from a branch, GitHub serves the entry file from the selected source folder.
+
+**Decision rule:** For the simplest project site, keep `index.html` at the repository root, add `.nojekyll`, configure Pages to deploy from `main` and `/ (root)`, then treat every push as a release.
+
+### Cold Open
+
+Before you learn variables, loops, servers, databases, or AI agents, ship one page.
+
+Not a perfect page.
+
+A real page.
+
+The reason is strategic: a public URL changes the learner's relationship with code.
+
+```text
+local file -> repository -> deployment -> public URL -> feedback
+```
+
+That path is the smallest version of modern software delivery.
+
+### What You Unlock
+
+After this entry, you can explain:
+
+```text
+What file GitHub Pages serves
+What branch triggers the release
+Where the public URL comes from
+Why a missing index.html creates a 404
+Why relative paths are safer for project pages
+How a static site differs from a backend app
+```
+
+This is not a side quest. This is the first production loop.
+
+### Knowledge Link
+
+| Past | Present | Future |
+|---|---|---|
+| A file can contain HTML and a browser can render it | GitHub Pages can serve `index.html` from a configured branch and folder | Git workflow, CI/CD, static sites, docs, portfolios, frontend apps, release discipline |
+
+### Tiny Model
+
+```text
+your computer
+  -> index.html
+  -> git add / commit / push
+  -> GitHub repository
+  -> Pages publishing source
+  -> https://username.github.io/repo-name/
+```
+
+The important point:
+
+```text
+GitHub does not read your mind.
+It reads the configured branch and folder.
+```
+
+### First Action
+
+Create a new folder:
+
+```bash
+mkdir first-ship
+cd first-ship
+```
+
+Create `index.html`:
+
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My First Ship</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        font-family: system-ui, sans-serif;
+        background: #0b0b0b;
+        color: #fff8ec;
+      }
+
+      main {
+        width: min(720px, calc(100% - 32px));
+        border: 1px solid #2a2a2a;
+        padding: 32px;
+        background: #141414;
+      }
+
+      strong {
+        color: #ffd21f;
+      }
+
+      a {
+        color: #ff2d2d;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p><strong>First ship:</strong> this page is live from GitHub Pages.</p>
+      <h1>I can publish code now.</h1>
+      <p>This is the first loop: write, commit, push, deploy, inspect.</p>
+      <a href="https://github.com/">Built with GitHub</a>
+    </main>
+  </body>
+</html>
+```
+
+Create `.nojekyll`:
+
+```bash
+touch .nojekyll
+```
+
+Why `.nojekyll`?
+
+```text
+It tells GitHub Pages: serve these files as plain static files.
+Do not run them through Jekyll processing.
+```
+
+### Git Commands
+
+Initialize and push:
+
+```bash
+git init
+git add index.html .nojekyll
+git commit -m "Publish first page"
+git branch -M main
+git remote add origin https://github.com/YOUR_USERNAME/first-ship.git
+git push -u origin main
+```
+
+Replace:
+
+```text
+YOUR_USERNAME
+```
+
+with your GitHub username.
+
+### GitHub Pages Config
+
+In GitHub:
+
+```text
+Repository -> Settings -> Pages
+```
+
+Set:
+
+```text
+Source: Deploy from a branch
+Branch: main
+Folder: / (root)
+Save
+```
+
+GitHub Pages will publish from:
+
+```text
+main/index.html
+```
+
+Your project URL will usually be:
+
+```text
+https://YOUR_USERNAME.github.io/first-ship/
+```
+
+For a special user site repository named:
+
+```text
+YOUR_USERNAME.github.io
+```
+
+the URL is:
+
+```text
+https://YOUR_USERNAME.github.io/
+```
+
+### Official Rule
+
+GitHub Pages looks for an entry file in the publishing source:
+
+```text
+index.html
+index.md
+README.md
+```
+
+For beginner static sites, use:
+
+```text
+index.html
+```
+
+Official docs:
+
+```text
+https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site
+https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site
+```
+
+### What Just Happened
+
+This action taught the first deployment system:
+
+| Piece | Meaning |
+|---|---|
+| `index.html` | The entry file browsers open first |
+| `.nojekyll` | A flag that keeps publishing simple for static files |
+| `git add` | Stage files for the next snapshot |
+| `git commit` | Save a named version |
+| `git push` | Send the version to GitHub |
+| Pages source | The branch and folder GitHub serves |
+| Public URL | The address other people can open |
+
+### Debugging Smell
+
+If the site does not work, check in this order:
+
+1. Is the repository public, or does your GitHub plan allow private Pages?
+2. Is Pages enabled under `Settings -> Pages`?
+3. Is the source set to `Deploy from a branch`?
+4. Is the branch `main`?
+5. Is the folder `/ (root)`?
+6. Is `index.html` at the root of the repo?
+7. Is the file named exactly `index.html`, not `Index.html` or `index.html.txt`?
+8. Did the latest commit finish pushing?
+9. Are you opening the project URL with the repo name?
+10. Are your CSS, JS, and image paths relative instead of hardcoded to `/`?
+
+Project page path rule:
+
+```text
+Good:  ./style.css
+Good:  style.css
+Risky: /style.css
+```
+
+The risky path points to the domain root, not always your repo folder.
+
+### Why This Is the First Dopamine Hit
+
+The learner gets a visible result fast:
+
+```text
+I wrote a file.
+I pushed it.
+The internet served it.
+Someone else can open it.
+```
+
+That feeling matters because programming is feedback training. The faster the feedback loop, the faster the learner starts thinking like a builder.
+
+### Memory Lock
+
+1. GitHub Pages can host static websites for free.
+2. `index.html` is the default entry file.
+3. Pages serves from the configured branch and folder.
+4. For the simplest project, use `main` and `/ (root)`.
+5. A push to the Pages source becomes a release.
+6. `.nojekyll` keeps static publishing simple.
+7. A public URL turns code into something inspectable.
+
+### Boss Fight
+
+Upgrade your first page:
+
+1. Add your name.
+2. Add one project idea.
+3. Add one button.
+4. Add one section explaining what you learned.
+5. Push again.
+6. Refresh the public URL.
+
+Then answer:
+
+```text
+What changed locally?
+What changed in Git?
+What changed on GitHub?
+What changed on the public site?
+```
+
+### AI Collaboration
+
+Ask an AI:
+
+```text
+Review my first GitHub Pages deployment.
+Check whether my index.html is valid, mobile-friendly, and safe for GitHub Pages.
+Explain the difference between local file, Git commit, GitHub repository, Pages source, and public URL.
+Do not add a framework. Keep it static and beginner-friendly.
+```
+
+### Future Connection
+
+This same release loop scales:
+
+```text
+static page -> portfolio -> docs site -> frontend app -> CI/CD pipeline
+```
+
+Later you may use GitHub Actions, build tools, tests, preview environments, custom domains, backend services, and cloud infrastructure.
+
+But the first mental model remains:
+
+```text
+source -> build artifact -> publishing source -> public URL
+```
+
+Learn that once. You will recognize deployment everywhere.
 
 ***
 

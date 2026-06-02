@@ -33,6 +33,10 @@ REQUIRED_SNIPPETS = [
     ".confidence-row { grid-template-columns: 1fr; }",
     "overflow-wrap: anywhere",
     "white-space: normal",
+    "Publish Your First Page for Free",
+    "GitHub Pages deployment flow",
+    "Pages source main / (root)",
+    "first deployment loop",
 ]
 
 

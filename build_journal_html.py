@@ -76,6 +76,16 @@ def add_visual(title: str) -> str:
   <div class="node white">Sensor</div><div class="return-line">feedback</div>
 </div>
 """
+    if "publish your first page" in lower or "github pages" in lower:
+        return """
+<div class="visual-card flow-visual" aria-label="GitHub Pages deployment flow">
+  <div class="chip">index.html</div>
+  <div class="pulse-line"></div>
+  <div class="chip red">git push</div>
+  <div class="pulse-line"></div>
+  <div class="chip yellow">public URL</div>
+</div>
+"""
     if "what is computation" in lower:
         return """
 <div class="visual-card flow-visual" aria-label="Input transform output diagram">
@@ -983,6 +993,13 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
 
     const precisionQuizBank = [
       {{
+        match: /publish your first page|github pages|first ship/i,
+        q: 'A learner wants GitHub Pages to serve a free static site from the simplest setup. Which configuration is the clean first move?',
+        options: ['index.html at repo root, .nojekyll, Pages source main / (root), then push releases', 'backend server running locally, private URL, no Git commits', 'index.html inside a random folder with Pages still pointed at root', 'only README text and no Pages setting'],
+        correct: 0,
+        why: 'For branch-based Pages publishing, the entry file must live in the selected publishing source. The simplest first ship is main, / (root), and index.html.'
+      }},
+      {{
         match: /computation|state|flow|transformation/i,
         q: 'You are designing a habit app. The user taps "done", the streak changes, and the screen updates. Which answer names the computation most precisely?',
         options: ['tap event -> update stored state -> render new streak', 'button color -> user motivation -> app success', 'database -> CSS -> notification', 'AI prompt -> random output -> hope'],
@@ -1193,6 +1210,7 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
 
     function recallPrompt(title) {{
       const precisionPrompts = [
+        [/publish your first page|github pages|first ship/i, 'Explain the first deployment loop from memory: local index.html, git commit, GitHub repo, Pages source, public URL, and one common 404 cause.'],
         [/computation/i, 'No notes. Pick one app and explain its input, hidden state, transformation, output, and one failure mode.'],
         [/computer|bits|cpu|silicon/i, 'Trace one user action from screen input down through runtime, memory/CPU, and back to visible output. Name where latency could enter.'],
         [/decomposition/i, 'Take a dream app and split it into responsibilities. For each piece, say what it owns and what it must not own.'],
@@ -1258,6 +1276,7 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
 
     function hardPrompt(title) {{
       const precisionPrompts = [
+        [/publish your first page|github pages|first ship/i, 'Transfer boss: design a free GitHub Pages launch plan for a friend with one HTML file, one CSS file, one image, correct relative paths, branch config, and a troubleshooting checklist.'],
         [/computation/i, 'Transfer boss: design a tiny fraud detector as input/state/transformation/output. Add one false-positive risk and one test.'],
         [/computer|bits|cpu/i, 'Transfer boss: an AI app is slow. Build a bottleneck tree from browser to network to server to model to memory/CPU/GPU. Pick the first measurement.'],
         [/decomposition/i, 'Transfer boss: decompose a personal AI study app into modules, data contracts, and failure boundaries. Mark one piece you would build first and why.'],
