@@ -81,6 +81,7 @@ def main() -> None:
     knowledge_count = html.count('class="knowledge-link')
     visual_count = html.count('class="visual-card')
     dream_lab_count = html.count('id="dream-lab')
+    senior_cut_count = html.count('id="senior-cut')
 
     if section_count < 70:
         fail(f"too few rendered sections: {section_count}")
@@ -92,6 +93,8 @@ def main() -> None:
         fail(f"too few visual cards: {visual_count}")
     if dream_lab_count < 27:
         fail(f"too few dream lab anchors: {dream_lab_count}")
+    if senior_cut_count < 27:
+        fail(f"too few senior cut anchors: {senior_cut_count}")
     if len(html) < len(md):
         fail("HTML artifact is unexpectedly smaller than markdown source")
 
@@ -101,6 +104,7 @@ def main() -> None:
     print(f"knowledge_links={knowledge_count}")
     print(f"visual_cards={visual_count}")
     print(f"dream_labs={dream_lab_count}")
+    print(f"senior_cuts={senior_cut_count}")
     print(f"html_bytes={len(html)}")
 
 

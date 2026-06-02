@@ -518,6 +518,11 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
       border-radius: 999px; background: var(--yellow); color: #000; font-size: .82rem;
       text-transform: uppercase; letter-spacing: .08em;
     }}
+    h3[id^="senior-cut"] {{
+      display: inline-flex; align-items: center; margin: 22px 0 12px; padding: 6px 10px;
+      border-radius: 999px; background: var(--panel-2); border: 1px solid var(--line);
+      color: var(--white); font-size: .82rem; text-transform: uppercase; letter-spacing: .08em;
+    }}
     h3[id^="dream-lab"] + p,
     h3[id^="dream-lab"] + p + p,
     h3[id^="dream-lab"] + p + p + p,
@@ -526,10 +531,19 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
       border-left: 3px solid var(--red); background: rgba(255,255,255,.035);
       border-radius: 0 var(--radius) var(--radius) 0; line-height: 1.45;
     }}
+    h3[id^="senior-cut"] + p,
+    h3[id^="senior-cut"] + p + p {{
+      max-width: none; margin: 8px 0; padding: 12px 14px;
+      border: 1px solid rgba(255,255,255,.12); border-left: 3px solid var(--yellow);
+      background: rgba(255,255,255,.045); border-radius: 0 var(--radius) var(--radius) 0;
+      line-height: 1.45;
+    }}
     body.light h3[id^="dream-lab"] + p,
     body.light h3[id^="dream-lab"] + p + p,
     body.light h3[id^="dream-lab"] + p + p + p,
     body.light h3[id^="dream-lab"] + p + p + p + p {{ background: rgba(255,210,31,.12); }}
+    body.light h3[id^="senior-cut"] + p,
+    body.light h3[id^="senior-cut"] + p + p {{ background: rgba(0,0,0,.035); }}
     h4 {{ color: var(--white); }}
     p {{ max-width: 76ch; margin: 14px 0; }}
     strong {{ color: var(--white); }}
