@@ -23,6 +23,10 @@ REQUIRED_SNIPPETS = [
     "journalVersion",
     "knowledge-link",
     "learning-check",
+    "precisionQuizBank",
+    "Scenario MCQ",
+    "Causal Recall",
+    "Transfer Boss Test",
     "rawMarkdown",
     "sourceDialog",
 ]

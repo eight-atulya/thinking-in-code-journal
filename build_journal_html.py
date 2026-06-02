@@ -939,18 +939,248 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
       }}
     ];
 
+    const precisionQuizBank = [
+      {{
+        match: /computation|state|flow|transformation/i,
+        q: 'You are designing a habit app. The user taps "done", the streak changes, and the screen updates. Which answer names the computation most precisely?',
+        options: ['tap event -> update stored state -> render new streak', 'button color -> user motivation -> app success', 'database -> CSS -> notification', 'AI prompt -> random output -> hope'],
+        correct: 0,
+        why: 'Good engineers trace the exact transformation: input enters, state changes, output appears.'
+      }},
+      {{
+        match: /computer|bits|memory|cpu|silicon/i,
+        q: 'An AI app feels slow. Which diagnosis shows the best hardware-stack thinking?',
+        options: ['Separate model latency, network wait, CPU work, memory pressure, and disk/cache behavior before changing code', 'Increase font size so the app feels faster', 'Rewrite everything in a new language immediately', 'Assume the GPU is always the bottleneck'],
+        correct: 0,
+        why: 'High-IQ debugging separates layers before prescribing medicine.'
+      }},
+      {{
+        match: /decomposition|breaking problems/i,
+        q: 'Your idea is "build a personal AI study coach." Which decomposition is strongest?',
+        options: ['auth, note capture, retrieval, quiz generation, scoring, review schedule, observability', 'frontend, backend, cool UI, launch', 'write code, fix bugs, add AI, ship', 'database first, everything else later'],
+        correct: 0,
+        why: 'Good decomposition creates testable responsibilities, not vague project phases.'
+      }},
+      {{
+        match: /algorithm|pseudocode/i,
+        q: 'A student says "the AI should help when I am stuck." Which algorithm is least ambiguous?',
+        options: ['If attempts >= 2 and confidence <= 2, show a hint; if attempts >= 4, show solution with explanation', 'Help when stuck', 'Use AI when needed', 'Make it adaptive and friendly'],
+        correct: 0,
+        why: 'Algorithms convert intention into conditions, actions, and stopping rules.'
+      }},
+      {{
+        match: /variable/i,
+        q: 'A game needs health, score, and current level. What is the deepest reason variables matter here?',
+        options: ['They name changing state so later logic can read and update it', 'They make code look professional', 'They permanently own memory forever', 'They replace the need for functions'],
+        correct: 0,
+        why: 'Variables matter because future decisions depend on named current state.'
+      }},
+      {{
+        match: /data types|type/i,
+        q: 'A checkout API receives price as "499" instead of 499. What is the real risk?',
+        options: ['The program may concatenate, validate, compare, or calculate incorrectly because the shape is wrong', 'The database will always fix it automatically', 'Strings are faster than numbers', 'Types only matter in compiled languages'],
+        correct: 0,
+        why: 'Types are not trivia; they define legal operations and failure modes.'
+      }},
+      {{
+        match: /control flow|if|loop/i,
+        q: 'An AI tutor must decide between hint, quiz, and full answer. What concept is doing the real work?',
+        options: ['control flow that maps learner state to the next action', 'a prettier prompt', 'a larger database table', 'a faster laptop'],
+        correct: 0,
+        why: 'Decision quality comes from explicit branches and repeated feedback.'
+      }},
+      {{
+        match: /function|tool/i,
+        q: 'Which function design is easiest to test and later expose as an AI tool?',
+        options: ['score_answer(answer, rubric) -> score_report', 'do_everything(user_input)', 'process(data)', 'main() with hidden globals'],
+        correct: 0,
+        why: 'A strong function has a clear contract: named inputs, focused work, inspectable output.'
+      }},
+      {{
+        match: /data structures|list|dict|set|tuple/i,
+        q: 'You store chat messages in order, user profiles by id, and unique tags. Which structure mix is most logical?',
+        options: ['list for messages, dict for profiles, set for tags', 'set for messages, list for profiles, dict for tags', 'tuple for everything', 'one giant string'],
+        correct: 0,
+        why: 'Structure choice should match access pattern: order, lookup, uniqueness, or fixed grouping.'
+      }},
+      {{
+        match: /error|exception|debug/i,
+        q: 'A file upload fails halfway through. Which response shows mature error handling?',
+        options: ['Return a clear error, preserve consistent state, log context, and let the user retry safely', 'Hide the error and continue', 'Crash so the user knows something happened', 'Retry forever without limits'],
+        correct: 0,
+        why: 'Good error handling protects state, user trust, and observability.'
+      }},
+      {{
+        match: /modules/i,
+        q: 'Your app has auth, AI calls, database code, and UI helpers in one file. What is the strongest reason to split modules?',
+        options: ['To create boundaries humans can navigate, test, and change independently', 'To increase file count', 'To make imports look advanced', 'To avoid learning functions'],
+        correct: 0,
+        why: 'Modules are cognitive architecture: they reduce blast radius and reading cost.'
+      }},
+      {{
+        match: /cli|command-line|terminal/i,
+        q: 'A CLI command silently fails but exits with success. What contract did it break?',
+        options: ['It failed to communicate outcome through output, error message, and exit behavior', 'It used the wrong color theme', 'It had too many arguments', 'It did not use AI'],
+        correct: 0,
+        why: 'A CLI is a contract between human/automation input and reliable machine output.'
+      }},
+      {{
+        match: /files|json|csv|pathlib/i,
+        q: 'A task tracker forgets all tasks after closing. What missing concept is exposed?',
+        options: ['persistent state outside process memory', 'a faster loop', 'more comments', 'a better variable name'],
+        correct: 0,
+        why: 'Files introduce durable memory: state that survives program exit.'
+      }},
+      {{
+        match: /api|fastapi|http|tool calling/i,
+        q: 'An AI agent calls `create_task` with no due date, bad JSON, and no user id. What should the API boundary do?',
+        options: ['validate the contract before doing work and return structured errors', 'guess the missing fields', 'write partial data anyway', 'let the database crash'],
+        correct: 0,
+        why: 'APIs and tools are trust boundaries. Boundaries must validate intent.'
+      }},
+      {{
+        match: /pipeline|etl/i,
+        q: 'A dashboard sometimes shows nonsense because raw events feed it directly. What pipeline principle is missing?',
+        options: ['separate raw, cleaned, validated, and published stages', 'make charts bigger', 'cache bad data harder', 'ask users to ignore edge cases'],
+        correct: 0,
+        why: 'Pipelines earn trust by making each transformation inspectable.'
+      }},
+      {{
+        match: /cooperative runtimes|scheduler|backoff|event loop/i,
+        q: 'An async web handler uses blocking validation and blocking sleep during retries. What is the real system risk?',
+        options: ['one request can occupy the scheduler lane and raise latency for unrelated users', 'the function name becomes inaccurate', 'the database schema changes', 'the UI color palette breaks'],
+        correct: 0,
+        why: 'Cooperative runtimes depend on yielding, offloading, and cancellation-aware waits.'
+      }},
+      {{
+        match: /async|concurrency/i,
+        q: 'You need to fetch 20 URLs and most time is network wait. What execution model is the best first fit?',
+        options: ['async I/O with timeouts and bounded concurrency', '20 CPU processes for every request', 'one blocking loop with no timeout', 'GPU kernels'],
+        correct: 0,
+        why: 'Async is for overlapping waiting, not magically speeding CPU math.'
+      }},
+      {{
+        match: /threads|cores|accelerators|cuda|mlx|mojo|context switching|virtual threading/i,
+        q: 'A service has 4 CPU cores and 400 runnable CPU-heavy threads. What is the sharpest diagnosis?',
+        options: ['the scheduler and cache are being taxed by too many runnable paths for limited cores', 'virtual threads will create 400 physical cores', 'the GPU should handle all branching logic', 'context switching is always free'],
+        correct: 0,
+        why: 'Runnable CPU work competes for real cores. Parallelism must respect physical capacity.'
+      }},
+      {{
+        match: /snowflake|warehouse|database|schema/i,
+        q: 'Two teams query the same production table, but AI experiments are slowing dashboards. What is the best Snowflake-shaped fix?',
+        options: ['separate compute warehouses and keep governed database/schema objects clear', 'duplicate every table into PUBLIC', 'rename the schema only', 'give the AI tool unlimited access'],
+        correct: 0,
+        why: 'Snowflake separates compute lanes from governed data namespaces.'
+      }},
+      {{
+        match: /capstone|scraper|intelligence service/i,
+        q: 'What makes the scraper intelligence service a real capstone instead of a demo?',
+        options: ['it integrates fetching, cleaning, storage, API contracts, errors, async, and observability', 'it has the most files', 'it prints many lines', 'it avoids tests to move faster'],
+        correct: 0,
+        why: 'A capstone proves integration under realistic boundaries and failure modes.'
+      }},
+      {{
+        match: /rust|ownership/i,
+        q: 'A Python image pipeline is correct but too slow in one tight CPU loop. When might Rust enter the design?',
+        options: ['when a small performance-critical component needs memory safety and predictable speed', 'when all Python code should be deleted', 'when the UI needs styling', 'when requirements are unclear'],
+        correct: 0,
+        why: 'Rust is a targeted tool for safety and speed, not a personality test.'
+      }},
+      {{
+        match: /java|structure|oop/i,
+        q: 'A large team keeps breaking each other\\'s feature logic. What does Java-style structure buy?',
+        options: ['explicit contracts that help teams coordinate changes safely', 'less need for design', 'no runtime failures ever', 'automatic product-market fit'],
+        correct: 0,
+        why: 'Structure is social technology for large codebases.'
+      }},
+      {{
+        match: /go|goroutine/i,
+        q: 'A service needs many background workers reading jobs and reporting results. Why might Go feel natural?',
+        options: ['goroutines and channels make simple production concurrency easy to express', 'Go hides all failure handling', 'Go is only for browsers', 'Go removes architecture decisions'],
+        correct: 0,
+        why: 'Go is shaped around simple concurrent services, not clever syntax.'
+      }},
+      {{
+        match: /reading other people|reading code|codebase/i,
+        q: 'You inherit a codebase before a deadline. What is the highest-leverage first move?',
+        options: ['trace one real user journey through entry point, tests, data, and output', 'read random helper files alphabetically', 'rewrite naming immediately', 'delete old tests to reduce noise'],
+        correct: 0,
+        why: 'A traced journey turns unknown code into a map.'
+      }},
+      {{
+        match: /clean code|writing clean/i,
+        q: 'A function is 90 lines long, mutates globals, catches all errors, and returns mixed shapes. What is the true problem?',
+        options: ['future readers cannot predict its contract, side effects, or failure behavior', 'it needs a shorter variable name', 'it should be moved to CSS', 'it is too beginner-friendly'],
+        correct: 0,
+        why: 'Clean code is about preserving human reasoning under change.'
+      }},
+      {{
+        match: /system design|production|scale|reliability/i,
+        q: 'Your study app works for 5 friends. Before 10,000 exam-week users arrive, what must system design answer?',
+        options: ['traffic, data ownership, failure modes, security, latency, cost, and observability', 'only the logo and landing page', 'which syntax looks coolest', 'how to avoid logs'],
+        correct: 0,
+        why: 'System design is how a feature becomes a trustworthy product.'
+      }},
+      {{
+        match: /control systems|feedback|stability|overshoot/i,
+        q: 'An AI agent keeps taking stronger actions after weak signals. Which control-system concept is being violated?',
+        options: ['stability through measured feedback and bounded correction', 'token count maximization', 'visual polish', 'one-shot execution'],
+        correct: 0,
+        why: 'Intelligent systems need feedback, limits, and correction without overshoot.'
+      }},
+      {{
+        match: /prompting|llm|agent|ai-native/i,
+        q: 'A prompt says "make it better" and the model rewrites everything. What was missing?',
+        options: ['specification: goal, constraints, allowed changes, tests, and evaluation criteria', 'more enthusiasm', 'a longer chat history only', 'a random model switch'],
+        correct: 0,
+        why: 'Prompting becomes engineering when intent is constrained and verifiable.'
+      }}
+    ];
+
     function quizFor(title) {{
-      const found = quizBank.find(item => item.match.test(title));
+      const found = precisionQuizBank.find(item => item.match.test(title)) || quizBank.find(item => item.match.test(title));
       if (found) return found;
       return {{
-        q: `What is the strongest way to learn "${{title}}"?`,
-        options: ['connect past knowledge, explain the present idea, and name the future unlock', 'read once and move on', 'copy code without testing', 'skip the hard parts'],
+        q: `A sharp learner reaches "${{title}}" and wants proof of understanding. What should they do?`,
+        options: ['explain the concept, apply it to a real system, name a failure mode, and test the idea', 'recognize the heading and move on', 'copy one example without changing it', 'ask AI for the answer and trust it blindly'],
         correct: 0,
-        why: 'Durable learning comes from retrieval, connection, transfer, and feedback.'
+        why: 'Real mastery requires recall, transfer, failure awareness, and verification.'
       }};
     }}
 
     function recallPrompt(title) {{
+      const precisionPrompts = [
+        [/computation/i, 'No notes. Pick one app and explain its input, hidden state, transformation, output, and one failure mode.'],
+        [/computer|bits|cpu|silicon/i, 'Trace one user action from screen input down through runtime, memory/CPU, and back to visible output. Name where latency could enter.'],
+        [/decomposition/i, 'Take a dream app and split it into responsibilities. For each piece, say what it owns and what it must not own.'],
+        [/algorithm/i, 'Write an algorithm in plain English with conditions and stopping rules. Then identify one ambiguous word and remove it.'],
+        [/variable/i, 'Explain how one named value changes over time in a game, checkout flow, or AI tutor. Include who reads it later.'],
+        [/data types/i, 'Choose four values from a real app and explain how the wrong type would create a bug.'],
+        [/control flow/i, 'Describe a real decision tree: what condition is checked, what branch runs, what repeats, and what stops it.'],
+        [/function/i, 'Explain one function as a contract: inputs, output, side effects, failure modes, and why it deserves a name.'],
+        [/data structures/i, 'For one feature, justify list vs dict vs set vs tuple using access pattern, not memorized definitions.'],
+        [/error|exception/i, 'Explain one failure as signal: what assumption broke, what state must be protected, and what the user should see.'],
+        [/modules/i, 'Map a small app into modules and defend each boundary as if another engineer must maintain it.'],
+        [/cli/i, 'Explain a CLI command as an automation contract: args, validation, stdout, stderr, exit behavior.'],
+        [/files/i, 'Explain what state should survive program exit, why JSON/CSV/text fits or fails, and how corruption could happen.'],
+        [/api|fastapi/i, 'Explain an API endpoint as a trust boundary: request shape, validation, work, response, and error contract.'],
+        [/pipeline/i, 'Trace dirty data through raw, cleaned, validated, and published stages. Name what can be inspected at each stage.'],
+        [/async/i, 'Explain which parts of a real AI app are waiting and how async prevents one wait from freezing unrelated work.'],
+        [/cooperative runtimes|scheduler/i, 'Explain scheduler cooperation using yield, offload, cancellation, and backoff. Name one blocking smell.'],
+        [/threads|cores|accelerators|cuda|mlx|mojo/i, 'Classify a workload as waiting, CPU-bound, memory-bound, or GPU-friendly. Explain what happens if you choose wrong.'],
+        [/snowflake|warehouse|database|schema/i, 'Explain warehouse, database, schema, object, role, and cost using one production data example.'],
+        [/capstone/i, 'Explain the capstone as a system path from input source to insight. Include where failures are logged.'],
+        [/rust/i, 'Explain where Python should stay and where Rust might enter. Justify with safety, speed, and maintenance cost.'],
+        [/java/i, 'Explain how explicit contracts help a team change code without silently breaking each other.'],
+        [/go/i, 'Explain goroutines, channels, and worker boundaries using a background job system.'],
+        [/debug/i, 'State a bug, three hypotheses, the smallest test for each, and what observation would change your mind.'],
+        [/reading/i, 'Explain how you would build a map of an unknown repo before editing. Include entry point, tests, and one journey.'],
+        [/clean/i, 'Explain how one messy function damages future reasoning. Name the contract you would extract first.'],
+        [/system design/i, 'Explain a study app for 10,000 users: data, traffic, failure, security, latency, cost, and observability.']
+      ];
+      const sharp = precisionPrompts.find(([pattern]) => pattern.test(title));
+      if (sharp) return sharp[1];
       const prompts = [
         [/computation/i, 'Explain computation using one app you used today. Name the input, state, transformation, and output.'],
         [/computer|bits|cpu/i, 'Explain how a tiny on/off signal can become a program layer by layer.'],
@@ -985,6 +1215,37 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
     }}
 
     function hardPrompt(title) {{
+      const precisionPrompts = [
+        [/computation/i, 'Transfer boss: design a tiny fraud detector as input/state/transformation/output. Add one false-positive risk and one test.'],
+        [/computer|bits|cpu/i, 'Transfer boss: an AI app is slow. Build a bottleneck tree from browser to network to server to model to memory/CPU/GPU. Pick the first measurement.'],
+        [/decomposition/i, 'Transfer boss: decompose a personal AI study app into modules, data contracts, and failure boundaries. Mark one piece you would build first and why.'],
+        [/algorithm/i, 'Transfer boss: write pseudocode for an adaptive quiz engine that gives hint, retry, or solution based on confidence and attempts. Include stopping rules.'],
+        [/variable/i, 'Transfer boss: design the state model for a learning streak system. Include update rules and one bug caused by stale state.'],
+        [/data types/i, 'Transfer boss: design request/response types for creating a task with title, due date, tags, priority, and optional AI summary. Include invalid examples.'],
+        [/control flow/i, 'Transfer boss: design the decision flow for content moderation in a student app. Include allow, warn, block, escalate, and appeal paths.'],
+        [/function/i, 'Transfer boss: turn three repeated product behaviors into functions with signatures, return values, and test cases. One must be safe for AI tool calling.'],
+        [/data structures/i, 'Transfer boss: model a chat app with messages, users, unread counts, unique reactions, pinned config, and search tags. Justify every structure.'],
+        [/error|exception/i, 'Transfer boss: design failure handling for an AI tool call that may timeout, return invalid JSON, or partially write data. Include rollback or compensation.'],
+        [/modules/i, 'Transfer boss: split an AI tutor backend into modules. For each module, define public functions and forbidden dependencies.'],
+        [/cli/i, 'Transfer boss: design a CLI for importing notes, generating quizzes, exporting progress, and reporting failures in automation-friendly output.'],
+        [/files/i, 'Transfer boss: design a local progress file format with versioning, migration, backup, and corrupted-file recovery.'],
+        [/api|fastapi/i, 'Transfer boss: design one API endpoint that a browser and an AI agent can both call safely. Include auth, validation, idempotency, and errors.'],
+        [/pipeline/i, 'Transfer boss: design a pipeline from raw PDFs to searchable study cards. Include validation checkpoints and bad-data quarantine.'],
+        [/async/i, 'Transfer boss: design bounded async work for 50 document uploads. Include timeouts, cancellation, backpressure, and progress streaming.'],
+        [/cooperative runtimes|scheduler/i, 'Transfer boss: audit an async retry system. Find blocking waits, retry storms, cancellation leaks, and work that should be offloaded.'],
+        [/threads|cores|accelerators|cuda|mlx|mojo/i, 'Transfer boss: design execution lanes for an AI product: request path, CPU workers, GPU batches, database calls, and observability. Name what must never be unbounded.'],
+        [/snowflake|warehouse|database|schema/i, 'Transfer boss: design Snowflake layout for a factory AI assistant. Separate warehouses, databases, schemas, trusted views, roles, freshness, and cost controls.'],
+        [/capstone/i, 'Transfer boss: turn the scraper into a production service. Add queueing, rate limits, retries, storage, observability, and one user-facing SLA.'],
+        [/rust/i, 'Transfer boss: choose whether to rewrite a slow Python component in Rust. Include profiling evidence, interface boundary, and maintenance trade-off.'],
+        [/java/i, 'Transfer boss: design interfaces for a team-owned learning platform. Include service contracts and how version changes stay safe.'],
+        [/go/i, 'Transfer boss: design Go workers for processing learning analytics. Include job ownership, channels, cancellation, and leak prevention.'],
+        [/debug/i, 'Transfer boss: debug a wrong Recall Score. Create a hypothesis table: symptom, suspected layer, test, expected observation, fix.'],
+        [/reading/i, 'Transfer boss: map this HTML generator before adding a feature. Identify parse path, render path, script behavior, and release checks.'],
+        [/clean/i, 'Transfer boss: refactor a long feature function into named steps. Preserve behavior, add tests, and explain the cognitive win.'],
+        [/system design/i, 'Transfer boss: design cloud progress sync for this journal. Include offline mode, auth, conflict resolution, data model, API, rate limits, monitoring, and privacy.']
+      ];
+      const sharp = precisionPrompts.find(([pattern]) => pattern.test(title));
+      if (sharp) return sharp[1];
       const prompts = [
         [/computation/i, 'Hard transfer: model an AI chatbot as input, state, transformation, output, and failure modes.'],
         [/computer|bits|cpu/i, 'Hard transfer: diagnose a slow AI app by listing possible bottleneck layers from model call down to hardware.'],
@@ -1034,7 +1295,7 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
           <summary>Brain Check <span data-check-status>${{saved.correct ? 'remembered' : 'active recall'}}</span></summary>
           <div class="check-body">
             <div class="check-stage">
-              <h4>1. Quick MCQ</h4>
+              <h4>1. Scenario MCQ</h4>
               <p>${{quiz.q}}</p>
               <div class="mcq-options">
                 ${{quiz.options.map((option, optionIndex) => `<button type="button" data-option="${{optionIndex}}">${{option}}</button>`).join('')}}
@@ -1042,7 +1303,7 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
               <p class="check-feedback">${{saved.correct ? quiz.why : ''}}</p>
             </div>
             <div class="check-stage">
-              <h4>2. Active Recall</h4>
+              <h4>2. Causal Recall</h4>
               <p>${{recallPrompt(title)}}</p>
               <textarea class="recall-box" placeholder="Type from memory. Imperfect is fine. Retrieval is the exercise.">${{saved.recallText || ''}}</textarea>
               <div class="button-row">
@@ -1062,7 +1323,7 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
               </div>
             </div>
             <div class="check-stage">
-              <h4>4. Hard Transfer Test</h4>
+              <h4>4. Transfer Boss Test</h4>
               <p class="hard-prompt">${{hardPrompt(title)}}</p>
               <button type="button" data-hard-done>${{saved.hard ? 'Hard test marked' : 'Mark hard test done'}}</button>
             </div>
