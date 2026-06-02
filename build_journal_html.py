@@ -164,6 +164,16 @@ def add_visual(title: str) -> str:
   <div class="chip">Extract</div><div class="pulse-line"></div><div class="chip red">Transform</div><div class="pulse-line"></div><div class="chip yellow">Load</div>
 </div>
 """
+    if "threads" in lower or "cores" in lower or "accelerators" in lower or "cuda" in lower or "mlx" in lower or "mojo" in lower:
+        return """
+<div class="visual-card feedback-visual" aria-label="Hardware execution flow">
+  <div class="node hot">Code</div><div class="arrow"></div>
+  <div class="node">Runtime</div><div class="arrow"></div>
+  <div class="node yellow">Thread</div><div class="arrow"></div>
+  <div class="node">Core / GPU</div><div class="arrow"></div>
+  <div class="node white">Memory / I/O</div><div class="return-line">bottleneck</div>
+</div>
+"""
     if "snowflake" in lower or "warehouse" in lower or "database" in lower or "schema" in lower:
         return """
 <div class="visual-card stack-visual" aria-label="Snowflake compute and namespace diagram">
@@ -778,6 +788,13 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
         why: 'Cooperative runtimes scale when tasks yield, offload blocking work, and keep request paths responsive.'
       }},
       {{
+        match: /threads|cores|accelerators|cuda|mlx|mojo|context switching|virtual threading/i,
+        q: 'What is the most durable way to choose a concurrency or accelerator strategy?',
+        options: ['classify the work as waiting, computing, memory-moving, or GPU-friendly', 'create as many runnable threads as possible', 'send every problem to the GPU', 'use the newest language name first'],
+        correct: 0,
+        why: 'Lasting engineering starts by understanding the work shape, then matching it to runtime, cores, memory, and accelerators.'
+      }},
+      {{
         match: /snowflake|warehouse|database|schema/i,
         q: 'In Snowflake, what is a virtual warehouse mainly responsible for?',
         options: ['compute and query execution', 'being the parent folder of every database', 'renaming table columns', 'replacing access control'],
@@ -879,6 +896,7 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
         [/pipeline/i, 'Explain extract-transform-load using a messy spreadsheet example.'],
         [/async/i, 'Explain async using waiting, not speed magic.'],
         [/cooperative runtimes|scheduler/i, 'Explain why blocking the scheduler is like stopping in front of a traffic controller.'],
+        [/threads|cores|accelerators|cuda|mlx|mojo/i, 'Explain code flow from source code to runtime, thread, core or GPU, memory/I/O, and result.'],
         [/snowflake|warehouse|database|schema/i, 'Explain Snowflake as compute lane plus data namespace: warehouse, database, schema, object, governance.'],
         [/capstone/i, 'Explain how the capstone combines storage, API, async, pipeline, and modules.'],
         [/rust/i, 'Explain why Rust feels strict and what that strictness buys.'],
@@ -912,6 +930,7 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
         [/pipeline/i, 'Hard transfer: design a pipeline that turns raw notes into quiz cards.'],
         [/async/i, 'Hard transfer: design async fetching for ten sources without blocking the UI.'],
         [/cooperative runtimes|scheduler/i, 'Hard transfer: design a retry-with-backoff system that yields, respects cancellation, and avoids retry storms.'],
+        [/threads|cores|accelerators|cuda|mlx|mojo/i, 'Hard transfer: classify each step of an AI app as I/O-bound, CPU-bound, memory-bound, or GPU-friendly, then choose async, virtual threads, worker pools, processes, or accelerator batches.'],
         [/snowflake|warehouse|database|schema/i, 'Hard transfer: design a Snowflake layout for an industrial AI assistant with separate compute lanes, trusted schemas, governance, freshness, and cost limits.'],
         [/capstone/i, 'Hard transfer: add observability and rate limits to the scraper intelligence service.'],
         [/rust/i, 'Hard transfer: choose what part of a Python AI product might deserve Rust and why.'],

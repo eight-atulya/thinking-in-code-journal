@@ -925,8 +925,9 @@ The best test is not "Can you recognize the answer?" The best test is "Can you b
 - Entry 23: Writing Clean Code
 - Entry 24: Introduction to System Design
 - Entry 25: Cooperative Runtimes — Never Block the Scheduler
-- Entry 26: Snowflake Mental Model — Warehouse, Database, Schema
-- Entry 27: How to Learn Any New Language
+- Entry 26: Threads, Cores, and Accelerators — How Code Moves Through Silicon
+- Entry 27: Snowflake Mental Model — Warehouse, Database, Schema
+- Entry 28: How to Learn Any New Language
 
 ## PART XI — AI-Native Programming
 - Entry 42: LLMs for Programmers — What They Are Good and Bad At
@@ -3914,7 +3915,678 @@ That is async programming, control systems, and AI safety meeting in one place.
 
 ***
 
-## Entry 26: Snowflake Mental Model — Warehouse, Database, Schema
+## Entry 26: Threads, Cores, and Accelerators — How Code Moves Through Silicon
+
+### Cold Open
+
+Every program has a body.
+
+Not a poetic body. A real physical body.
+
+Your code eventually becomes electrical activity moving through silicon: CPU cores, caches, memory buses, GPU multiprocessors, neural accelerators, storage controllers, and network cards.
+
+On the screen, a thread sounds simple:
+
+```text
+one thread = one path of execution
+```
+
+But in production, that sentence becomes deeper:
+
+```text
+thread = a scheduled path of work
+core   = hardware that can execute work
+runtime = the traffic system between code and hardware
+```
+
+The future programmer must feel the path.
+
+Not just:
+
+```text
+I wrote code.
+```
+
+But:
+
+```text
+My code is waiting on network.
+My code is burning CPU.
+My code is blocked on disk.
+My code is starving the event loop.
+My code has too many runnable threads.
+My code should be vectorized.
+My code should move to GPU.
+My code should not move to GPU because transfer overhead is bigger than the work.
+```
+
+This is where software becomes hardware awareness.
+
+### What You Unlock
+
+After this entry, you can look at a modern application and ask:
+
+```text
+Is this work I/O-bound?
+Is this work CPU-bound?
+Is this work memory-bound?
+Is this work GPU-friendly?
+Is the runtime helping me or fighting me?
+Are there more runnable threads than useful cores?
+Is parallelism reducing time or creating overhead?
+```
+
+That question set will survive the next decade of languages.
+
+### Knowledge Link
+
+| Past | Present | Future |
+|---|---|---|
+| Bits, CPU, memory, async, files, APIs, functions, data pipelines | Threads are scheduled paths of execution; cores execute work; runtimes coordinate waiting, parallelism, and hardware use | AI apps, GPU kernels, CUDA, MLX, Mojo, Java virtual threads, Python async, Rust/Go concurrency, heterogeneous computing |
+
+### Tiny Model
+
+```text
+human intent
+   -> source code
+   -> runtime / compiler
+   -> thread / task / kernel
+   -> CPU core / GPU SM / accelerator
+   -> memory + I/O
+   -> result
+```
+
+The future of coding is not only:
+
+```text
+Which language should I use?
+```
+
+It is:
+
+```text
+Where should this work run?
+How many paths should run at once?
+What is each path waiting for?
+What does the hardware do well?
+What does the runtime hide from me?
+What must I still understand?
+```
+
+### The Feel
+
+Imagine the computer as a factory.
+
+The CPU cores are expert workers.
+
+Threads are work tickets.
+
+The operating system scheduler is the floor manager.
+
+Memory is the parts shelf.
+
+Disk and network are far-away warehouses.
+
+The GPU is a giant hall of specialized workers who are amazing when the same kind of work must be done thousands or millions of times.
+
+The mistake is thinking:
+
+```text
+more tickets = more speed
+```
+
+The truth is:
+
+```text
+right work + right worker + right scheduling = speed
+```
+
+### The Core Vocabulary
+
+| Term | Beginner Feel | Production Meaning |
+|---|---|---|
+| Process | A running program | Owns memory space and resources |
+| Thread | A line of execution | A schedulable path inside a process |
+| Core | A hardware worker | Executes instructions physically |
+| Scheduler | Traffic controller | Chooses what runs on which core and when |
+| Context switch | Switching attention | Saving one runnable path and resuming another |
+| Parallelism | At the same time | Multiple cores doing work simultaneously |
+| Concurrency | Overlapping progress | Many tasks making progress, not always simultaneously |
+| I/O-bound | Waiting on outside world | Network, disk, database, API, user input |
+| CPU-bound | Thinking hard | Computation consumes processor cycles |
+| Memory-bound | Hunting parts | Waiting on memory/cache movement |
+| GPU-friendly | Same operation many times | Massive parallel math/data work |
+
+### I/O-Bound vs CPU-Bound
+
+This distinction is one of the biggest unlocks in real engineering.
+
+#### I/O-bound
+
+Your code spends most of its time waiting.
+
+Examples:
+
+```text
+calling an API
+reading a file
+querying a database
+waiting for Snowflake results
+downloading model weights
+streaming a response
+waiting for user input
+```
+
+The CPU is often not the bottleneck.
+
+Better tools:
+
+```text
+async/await
+event loops
+virtual threads
+connection pools
+batching
+caching
+timeouts
+retries with backoff
+```
+
+#### CPU-bound
+
+Your code spends most of its time computing.
+
+Examples:
+
+```text
+image processing
+compression
+simulation
+parsing huge files
+training/inference math
+cryptography
+large joins or transformations
+pathfinding
+scientific computation
+```
+
+The CPU or accelerator is the bottleneck.
+
+Better tools:
+
+```text
+multiple processes
+native extensions
+vectorization
+Rust/C++/Mojo kernels
+GPU acceleration
+CUDA
+MLX on Apple silicon
+algorithm redesign
+```
+
+### The Flow Table
+
+| Work Type | What It Feels Like | Best First Question | Common Tool |
+|---|---|---|---|
+| API calls | Many pauses | Can tasks wait without blocking? | async, virtual threads |
+| Database queries | Waiting plus remote compute | Can I batch, index, cache, or separate workloads? | SQL, pools, warehouses |
+| Heavy Python loop | One core sweating | Can the loop be vectorized or moved native? | NumPy, Rust, Mojo |
+| Model inference | Matrix math | Can this run on GPU/neural accelerator? | CUDA, PyTorch, MLX |
+| ETL pipeline | Stages of movement | Is this I/O, CPU, or memory-bound per stage? | queues, workers, warehouses |
+| Web server | Many users waiting | Are request handlers blocking? | async, thread pools, virtual threads |
+| Simulation | Computation repeated | Can independent units run in parallel? | multiprocessing, GPU |
+
+### What Is Context Switching?
+
+Suppose a core is running Thread A.
+
+Then the operating system decides Thread B should run.
+
+To switch, it must save enough state from Thread A, load state for Thread B, and resume execution.
+
+That handoff is a context switch.
+
+Simple model:
+
+```text
+core runs A
+  -> save A's position
+  -> load B's position
+  -> core runs B
+```
+
+A context switch is useful when a thread is waiting.
+
+It is wasteful when too many runnable threads are competing for too few cores.
+
+```text
+4 cores + 4 CPU-heavy runnable threads   = useful parallelism
+4 cores + 400 CPU-heavy runnable threads = scheduler overhead, cache disruption, slower work
+```
+
+The hidden cost:
+
+1. Scheduler time increases.
+2. CPU caches lose useful data.
+3. Threads resume cold.
+4. Latency becomes unpredictable.
+5. The program may feel busy but finish less work.
+
+This is why "more threads" is not automatically better.
+
+### Runnable vs Waiting
+
+The word **runnable** matters.
+
+| Thread State | Meaning | Cost |
+|---|---|---|
+| Running | On a core right now | Uses CPU |
+| Runnable | Ready, waiting for a core | Competes for CPU |
+| Blocked/waiting | Waiting for I/O, lock, timer, or signal | Usually not using CPU |
+
+Too many waiting tasks may be fine.
+
+Too many runnable CPU-heavy tasks are dangerous.
+
+This is why virtual threads can be great for I/O-heavy servers but do not magically create more CPU cores.
+
+### What Is Virtual Threading?
+
+A traditional platform thread is closely tied to an operating system thread.
+
+A virtual thread is a lighter thread managed by a language runtime, such as the JVM in modern Java.
+
+Beginner model:
+
+```text
+platform thread = real worker lane from the OS
+virtual thread  = lightweight task that can park while waiting
+carrier thread  = real OS thread that runs virtual-thread work
+```
+
+Virtual threads shine when tasks spend much of their life waiting:
+
+```text
+request arrives
+  -> virtual thread starts
+  -> calls database
+  -> parks while waiting
+  -> carrier thread runs other work
+  -> database responds
+  -> virtual thread resumes
+```
+
+They make blocking-style code feel easier to write for I/O-heavy workloads.
+
+But they do not solve CPU-bound work by themselves.
+
+```text
+1,000 virtual threads doing network waits = often useful
+1,000 virtual threads doing CPU math      = still fighting for limited cores
+```
+
+Memory lock:
+
+```text
+virtual threads multiply waiting capacity,
+not physical compute capacity.
+```
+
+### Language Map
+
+Different languages expose the hardware path differently.
+
+| Language / Runtime | Concurrency Feel | Strong Use Case | Watch Out |
+|---|---|---|---|
+| Python `asyncio` | Cooperative tasks | I/O-heavy apps, APIs, agents | Blocking the event loop |
+| Python threads | Familiar shared-memory threads | I/O-heavy code, blocking libraries | CPU-bound limits and shared-state bugs |
+| Python multiprocessing | Separate processes | CPU-bound parallel work | Serialization and process overhead |
+| Java virtual threads | Blocking style, lightweight waiting | High-concurrency I/O services | CPU-bound work still needs limited pools |
+| Go goroutines | Lightweight concurrent workers | Network services, pipelines | Unbounded goroutines and leaks |
+| Rust async | Explicit futures | High-performance async systems | Complexity and blocking inside async |
+| JavaScript event loop | Single-threaded async by default | UI and I/O orchestration | Blocking the main thread |
+| C/C++/Rust/Mojo | Low-level performance control | CPU kernels, systems, accelerators | More responsibility |
+
+The lasting rule:
+
+```text
+match the work type to the runtime model.
+```
+
+### CUDA: The GPU Mental Model
+
+CPU thinking:
+
+```text
+few powerful cores
+great for branching, orchestration, mixed work
+```
+
+GPU thinking:
+
+```text
+many parallel lanes
+great for the same math over lots of data
+```
+
+CUDA gives a programming model for NVIDIA GPUs.
+
+The mental shape:
+
+```text
+CPU launches kernel
+  -> grid of blocks
+  -> blocks contain threads
+  -> blocks are scheduled on streaming multiprocessors
+  -> threads work on pieces of data
+```
+
+Tiny model:
+
+```text
+kernel
+  grid
+    block
+      thread
+```
+
+The important feeling:
+
+```text
+Do not think "one GPU thread is like one CPU thread."
+Think "many tiny workers map to many data elements."
+```
+
+GPU work is strongest when:
+
+1. The same operation repeats across huge data.
+2. Threads can work independently.
+3. Memory access is efficient.
+4. Data transfer overhead is worth it.
+5. The algorithm avoids too much branching.
+
+Bad GPU fit:
+
+```text
+small work
+lots of branching
+constant CPU/GPU data copying
+threads waiting on each other
+```
+
+### MLX: Apple Silicon Mental Model
+
+MLX is a modern array framework designed for machine learning on Apple silicon.
+
+The beginner feeling is:
+
+```text
+NumPy-like code, but hardware-aware
+```
+
+The deeper feeling:
+
+```text
+arrays form a compute graph
+work can be lazy
+operations can run on CPU or GPU
+unified memory reduces the mental tax of moving arrays around
+```
+
+This matters because future coding will often look like:
+
+```text
+write high-level array logic
+let framework/runtime choose efficient execution
+understand enough hardware to debug performance
+```
+
+You may not write the GPU kernel yourself every day.
+
+But you still need to know:
+
+```text
+What work is being batched?
+When does computation actually happen?
+Where does the data live?
+Which device runs the operation?
+What forces synchronization?
+```
+
+### Mojo and the Future of Performance Languages
+
+Mojo is one signal of a larger trend:
+
+```text
+Python-like usability + systems-level performance + heterogeneous hardware
+```
+
+The reason languages like Mojo matter is not hype.
+
+It is that AI made performance mainstream again.
+
+For years, many programmers could ignore hardware details because web apps were often I/O-bound. AI changes that. Now a normal product may care about:
+
+1. Matrix multiplication.
+2. Vectorized operations.
+3. GPU kernels.
+4. Memory layout.
+5. Batch size.
+6. Inference latency.
+7. Token throughput.
+8. Accelerator portability.
+
+Future languages will compete on this question:
+
+```text
+Can I express human intent clearly while still reaching the metal?
+```
+
+That is the deep bridge from Python to Mojo, from Java to virtual threads, from JavaScript to workers, from Rust to async and systems performance, from CUDA to GPU kernels, from MLX to Apple silicon compute.
+
+### AI Application Pattern
+
+Suppose you are building an AI assistant for an industrial application.
+
+It might have:
+
+```text
+web/API requests          -> I/O-bound
+Snowflake queries         -> remote compute + I/O wait
+embedding generation      -> GPU/accelerator-friendly
+retrieval/reranking       -> CPU/GPU mix
+agent tool loop           -> async orchestration
+image/video inspection    -> GPU-friendly
+business-rule validation  -> CPU-bound or I/O-bound
+audit logging             -> I/O-bound
+dashboard updates         -> I/O-bound
+```
+
+A good design separates lanes:
+
+```text
+request lane      -> fast, responsive, mostly I/O
+worker lane       -> background CPU/I/O tasks
+GPU lane          -> batched model work
+database lane     -> governed data access
+control lane      -> retries, limits, approval, rollback
+```
+
+Bad design:
+
+```text
+one request handler does everything directly
+```
+
+Better design:
+
+```text
+request handler accepts intent
+  -> validates quickly
+  -> schedules heavy work
+  -> awaits I/O without blocking
+  -> batches accelerator work
+  -> streams progress
+  -> records observable state
+```
+
+### Flow: Choosing the Right Execution Model
+
+```text
+Start with the work.
+
+Is it waiting on API/db/file/network?
+  -> use async, virtual threads, pools, batching, timeouts
+
+Is it heavy computation on CPU?
+  -> improve algorithm, use native/vectorized code, processes, limited worker pools
+
+Is it same math over huge arrays?
+  -> use GPU/accelerator frameworks: CUDA, MLX, PyTorch, JAX, Mojo kernels
+
+Is it tiny work?
+  -> keep it simple; parallel overhead may cost more than it saves
+
+Is it production?
+  -> add limits, observability, cancellation, backpressure, cost awareness
+```
+
+### The Fundamental Logic That Lasts
+
+The languages will change.
+
+The chips will change.
+
+The durable logic is:
+
+1. Understand the shape of the work.
+2. Separate waiting from computing.
+3. Keep hot paths small.
+4. Use parallelism only where independence exists.
+5. Measure before and after.
+6. Avoid unbounded work creation.
+7. Respect memory movement.
+8. Match work to hardware.
+9. Make cancellation and backpressure real.
+10. Design so future humans can see the flow.
+
+### Debugging Smell
+
+Your concurrency model may be wrong if:
+
+1. CPU usage is high but throughput is low.
+2. The app creates unlimited threads/tasks.
+3. Latency spikes under load.
+4. One slow request slows unrelated requests.
+5. GPU utilization is low while CPU waits.
+6. CPU/GPU data copies dominate runtime.
+7. An async app uses blocking sleep or blocking I/O in the hot path.
+8. A virtual-thread app treats CPU-heavy work as free.
+9. A Python app expects threads to speed up heavy pure-Python loops.
+10. A model service runs every request separately instead of batching.
+
+Ask:
+
+```text
+What is runnable?
+What is waiting?
+What is computing?
+What is copying?
+What is scheduling?
+What is the real bottleneck?
+```
+
+### Memory Lock
+
+1. A thread is a path of execution.
+2. A core is physical execution capacity.
+3. Concurrency is overlapping progress.
+4. Parallelism is simultaneous execution.
+5. I/O-bound work waits.
+6. CPU-bound work computes.
+7. GPU-friendly work repeats the same math over lots of data.
+8. Context switching has cost.
+9. Virtual threads help waiting workloads, not infinite CPU work.
+10. Future coding is hardware-aware orchestration.
+
+### Boss Fight
+
+Design the execution model for an AI document-analysis service.
+
+It must:
+
+1. Accept many user uploads.
+2. Extract text from files.
+3. Call an embedding model.
+4. Query a vector index.
+5. Ask an LLM for an answer.
+6. Store audit logs.
+7. Stream progress to the browser.
+8. Avoid blocking request handlers.
+9. Avoid unlimited runnable CPU work.
+10. Batch accelerator work when possible.
+
+For each step, label it:
+
+```text
+I/O-bound, CPU-bound, memory-bound, or GPU-friendly
+```
+
+Then choose:
+
+```text
+async task, virtual thread, worker pool, process pool, GPU batch, or simple synchronous code
+```
+
+### AI Collaboration
+
+Ask an AI:
+
+```text
+Review this application design through a hardware-flow lens.
+Classify each step as I/O-bound, CPU-bound, memory-bound, or GPU-friendly.
+Find where too many runnable threads could cause context-switching overhead.
+Find where virtual threads help and where they do not.
+Find where CUDA, MLX, vectorization, or Mojo-style native kernels could help.
+Do not optimize first. Explain the execution flow first.
+```
+
+### Future Connection
+
+The future programmer will speak three languages at once:
+
+```text
+human intent
+software architecture
+hardware flow
+```
+
+AI will write more code.
+
+That makes this lesson more important, not less.
+
+When AI generates code, someone must still ask:
+
+```text
+Where does it run?
+How many paths does it create?
+What does it wait on?
+What does it compute?
+What does it copy?
+What does it cost?
+What breaks under load?
+```
+
+That someone is the engineer.
+
+The best builders will not merely prompt.
+
+They will feel the machine.
+
+***
+
+## Entry 27: Snowflake Mental Model — Warehouse, Database, Schema
 
 ### Cold Open
 
