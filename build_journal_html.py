@@ -164,6 +164,12 @@ def add_visual(title: str) -> str:
   <div class="chip">Extract</div><div class="pulse-line"></div><div class="chip red">Transform</div><div class="pulse-line"></div><div class="chip yellow">Load</div>
 </div>
 """
+    if "snowflake" in lower or "warehouse" in lower or "database" in lower or "schema" in lower:
+        return """
+<div class="visual-card stack-visual" aria-label="Snowflake compute and namespace diagram">
+  <span>Warehouse: compute lane</span><span>Database: data domain</span><span>Schema: namespace</span><span>Object: table / view</span><span>AI: trusted context</span>
+</div>
+"""
     if "async" in lower:
         return """
 <div class="visual-card agent-visual" aria-label="Async concurrency diagram">
@@ -772,6 +778,13 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
         why: 'Cooperative runtimes scale when tasks yield, offload blocking work, and keep request paths responsive.'
       }},
       {{
+        match: /snowflake|warehouse|database|schema/i,
+        q: 'In Snowflake, what is a virtual warehouse mainly responsible for?',
+        options: ['compute and query execution', 'being the parent folder of every database', 'renaming table columns', 'replacing access control'],
+        correct: 0,
+        why: 'A warehouse is the compute lane. Databases and schemas organize objects; governance controls who may use them.'
+      }},
+      {{
         match: /capstone|scraper|intelligence service/i,
         q: 'What makes a capstone different from an isolated exercise?',
         options: ['It combines multiple skills into one system with boundaries', 'It avoids errors by being large', 'It should not be tested', 'It uses only one concept'],
@@ -866,6 +879,7 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
         [/pipeline/i, 'Explain extract-transform-load using a messy spreadsheet example.'],
         [/async/i, 'Explain async using waiting, not speed magic.'],
         [/cooperative runtimes|scheduler/i, 'Explain why blocking the scheduler is like stopping in front of a traffic controller.'],
+        [/snowflake|warehouse|database|schema/i, 'Explain Snowflake as compute lane plus data namespace: warehouse, database, schema, object, governance.'],
         [/capstone/i, 'Explain how the capstone combines storage, API, async, pipeline, and modules.'],
         [/rust/i, 'Explain why Rust feels strict and what that strictness buys.'],
         [/java/i, 'Explain why explicit structure helps large teams.'],
@@ -898,6 +912,7 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
         [/pipeline/i, 'Hard transfer: design a pipeline that turns raw notes into quiz cards.'],
         [/async/i, 'Hard transfer: design async fetching for ten sources without blocking the UI.'],
         [/cooperative runtimes|scheduler/i, 'Hard transfer: design a retry-with-backoff system that yields, respects cancellation, and avoids retry storms.'],
+        [/snowflake|warehouse|database|schema/i, 'Hard transfer: design a Snowflake layout for an industrial AI assistant with separate compute lanes, trusted schemas, governance, freshness, and cost limits.'],
         [/capstone/i, 'Hard transfer: add observability and rate limits to the scraper intelligence service.'],
         [/rust/i, 'Hard transfer: choose what part of a Python AI product might deserve Rust and why.'],
         [/java/i, 'Hard transfer: design interfaces for a team-owned learning platform.'],

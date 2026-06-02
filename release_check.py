@@ -81,9 +81,9 @@ def main() -> None:
         fail(f"too few rendered sections: {section_count}")
     if code_count < 100:
         fail(f"too few code cards: {code_count}")
-    if knowledge_count < 25:
+    if knowledge_count < 26:
         fail(f"too few knowledge-link cards: {knowledge_count}")
-    if visual_count < 19:
+    if visual_count < 47:
         fail(f"too few visual cards: {visual_count}")
     if len(html) < len(md):
         fail("HTML artifact is unexpectedly smaller than markdown source")
