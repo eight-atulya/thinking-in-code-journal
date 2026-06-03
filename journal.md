@@ -7,6 +7,23 @@
 
 ***
 
+Programming became real to me when I stopped looking at code as isolated lines and started looking for flow.
+
+The thought process is simple, but it changes everything:
+
+```text
+Where does execution enter?
+What is checked first?
+What inputs arrive?
+What tasks get scheduled?
+What state changes?
+What happens if the condition is true?
+What happens if it is false?
+What fails, retries, exits, or waits?
+```
+
+Once I began tracing that path every time, programs stopped feeling like syntax and started feeling like conversations with a machine.
+
 > *"The future programmer is not only a person who writes syntax. The future programmer is a person who can think clearly enough that humans, computers, and AI systems can all execute their intent."*
 
 ***
