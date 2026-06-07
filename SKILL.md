@@ -1,107 +1,71 @@
 ---
 name: thinking-in-code-journal-companion
-description: Maintain, expand, validate, and publish the Thinking in Code interactive programming journal as a self-contained GitHub Pages site.
+description: Maintain, expand, validate, publish, or recreate the Thinking in Code interactive programming journal as a self-contained GitHub Pages site, including content edits, UI/UX work, learning checks, pitch pages, release validation, and public cache verification.
 ---
 
 # Thinking In Code Journal Companion
 
-Use this skill when working in this repository to help Anurag maintain the interactive programming journal, add new learning entries, improve the HTML experience, or publish updates to GitHub Pages.
+Use this skill whenever a user wants to build something like this journal, edit this journal, add a feature, fix the UI, add a page such as a pitch deck, or publish the GitHub Pages artifact.
 
-## Core Mission
+The job is not only to change files. The job is to preserve a learning product: a readable, interactive, mobile-safe journal that helps a beginner understand code as flow, state, checks, branches, feedback, and production reality.
 
-This journal is not a normal course book. It is Anurag's programming journal for future builders: a practical path from first deployment, computation, Python, systems thinking, AI-native engineering, hardware flow, and production judgment.
+## Mental Model
 
-Every change should make the learner more able to:
-
-1. Build something real.
-2. Understand the system beneath the code.
-3. Use AI without losing judgment.
-4. Remember through retrieval, not passive reading.
-5. Ship, inspect, debug, and improve.
-
-## Repository Shape
-
-Important files:
+Think of this project as four connected layers:
 
 ```text
-journal.md              Source manuscript.
-programing-language.md  Local ignored/editor copy synced from journal.md.
-build_journal_html.py   Generates the self-contained index.html.
-index.html              Published static artifact for GitHub Pages.
-release_check.py        Release validator.
-.nojekyll               Keeps GitHub Pages static and simple.
+journal.md -> build_journal_html.py -> index.html -> GitHub Pages
 ```
 
-Do not edit `index.html` directly for content. Edit `journal.md` or `build_journal_html.py`, then rebuild.
-
-## Standard Workflow
-
-After content, UI, or assessment changes, run:
-
-```bash
-python3 build_journal_html.py
-cp journal.md programing-language.md
-python3 release_check.py
-python3 -m py_compile build_journal_html.py release_check.py
-```
-
-Also validate embedded JavaScript:
-
-```bash
-node - <<'NODE'
-const fs = require('fs');
-const html = fs.readFileSync('index.html', 'utf8');
-const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]);
-for (const script of scripts) new Function(script);
-console.log('script-syntax-ok', scripts.length);
-NODE
-```
-
-If publishing:
-
-```bash
-git add journal.md index.html build_journal_html.py release_check.py SKILL.md
-git commit -m "<clear release message>"
-git push origin main
-```
-
-Then check GitHub Pages with a cache-busting URL:
-
-```bash
-curl -L --max-time 20 -s "https://eight-atulya.github.io/thinking-in-code-journal/?v=<commit>" | rg "Expected new phrase"
-```
-
-GitHub Pages may take several minutes to refresh. A pushed commit can be correct while the public edge cache still serves the previous artifact.
-
-## Editorial Voice
-
-Default to senior engineering clarity.
-
-Use this structure:
+Each layer has one job:
 
 ```text
-Define the concept.
-Show the system consequence.
-Name the failure mode.
-Give a practical decision rule.
-Use examples only when they sharpen the mechanism.
+journal.md              = source manuscript and learning content
+build_journal_html.py   = renderer, CSS, JS, UI behavior, quizzes, learning checks
+index.html              = generated published artifact
+release_check.py        = release guard that catches broken promises
+if-may-pitch.html       = standalone pitch page linked from the journal
+programing-language.md  = local editor copy synced from journal.md when present
+.nojekyll               = tells GitHub Pages to serve static files plainly
 ```
 
-Avoid:
+Rule: do not hand-edit `index.html` for durable changes. Edit `journal.md` or `build_journal_html.py`, rebuild, then validate.
+
+## First Decision
+
+Before changing anything, decide which route applies:
 
 ```text
-Long poetic buildup.
-Vague motivation.
-Cute metaphors that hide the mechanism.
-Claims without operational consequence.
-Motivation without action.
+Route A: edit words/content        -> journal.md
+Route B: add a new lesson/entry    -> journal.md + build_journal_html.py quizzes/prompts if needed
+Route C: change layout/UI/UX       -> build_journal_html.py CSS/HTML/JS, then rebuild index.html
+Route D: add a standalone page     -> add the .html file + link from build_journal_html.py
+Route E: change release promises   -> release_check.py
+Route F: validate                  -> rebuild, sync editor copy, run release and syntax checks
+Route G: publish                   -> commit, push, verify raw or Pages URL
+Route H: create a new journal      -> copy the architecture, then customize content, renderer, checks, and Pages config
 ```
 
-The journal can be exciting, but the excitement should come from the learner doing something real.
+If the request says "fix the website" or "phone view is broken," inspect the rendered HTML/CSS and test with a browser-sized check before editing.
 
-## Entry Pattern
+## Route A: Edit Existing Content
 
-New major entries should include:
+1. Search the manuscript:
+
+```bash
+rg -n "phrase or heading" journal.md
+```
+
+2. Edit `journal.md` at the smallest correct location.
+3. Preserve Anurag's operational voice: entry point, first checks, inputs, scheduled work, state changes, `if/else`, retries, exits, waits.
+4. Avoid polishing concrete understanding into abstract slogans.
+5. Rebuild and validate with the standard commands below.
+
+When the user says "put it above/below this quote," edit that exact local spot. Do not move the idea into a disconnected note.
+
+## Route B: Add A New Entry
+
+Use this structure for major learning entries:
 
 ```markdown
 ## Entry X: Clear Title
@@ -150,101 +114,344 @@ Prompt that helps without replacing thinking.
 How this scales into AI-native or production work.
 ```
 
-## Assessment Rules
-
-Each implemented entry should have:
-
-1. A precise MCQ.
-2. A causal recall prompt.
-3. A hard transfer test.
-
-Add handcrafted checks in `build_journal_html.py` when a new concept deserves a non-generic assessment:
+Every serious entry should give the learner:
 
 ```text
-precisionQuizBank
+definition -> consequence -> failure mode -> practical rule -> tiny action -> memory lock -> transfer test
+```
+
+If the new entry introduces a major concept, also update the quiz/prompt logic in `build_journal_html.py`:
+
+```text
+quizBank or precisionQuizBank
 recallPrompt precisionPrompts
 hardPrompt precisionPrompts
 ```
 
-Update `release_check.py` when adding a new structural promise that must not regress.
+Then update `release_check.py` only when the new structure must never regress.
 
-## Visual Rules
+## Route C: Change UI Or UX
 
-Use simple HTML/CSS visuals generated by `build_journal_html.py`.
+All durable UI lives in `build_journal_html.py`.
 
-Prefer:
+Common UI surfaces:
 
 ```text
-flow diagrams
-stack diagrams
-feedback loops
-system maps
-small state machines
+sidebar/nav/search/buttons      -> CSS near sidebar rules + sidebar HTML
+hero                            -> hero CSS + header markup
+entry cards                     -> .entry-section, .entry-inner, section-toggle
+code blocks and copy buttons    -> code-card renderer + .code-card CSS
+Brain Check                     -> buildLearningChecks() + .learning-check CSS
+quizzes and scoring             -> quizBank, precisionQuizBank, updateScore()
+mobile menu                     -> @media (max-width: 900px) + mobileMenuToggle JS
+print behavior                  -> @media print
 ```
 
-Avoid decorative visuals that do not teach a system relationship.
+UI quality rules:
 
-Mobile must work. Brain Check blocks need:
+1. Test at phone width and desktop width.
+2. No horizontal overflow.
+3. No text collision inside buttons, chips, cards, or nav rows.
+4. Large touch targets on mobile.
+5. Use hierarchy through spacing, type, subtle fills, and alignment. Avoid noisy borders when the user dislikes them.
+6. Do not create nested cards or card-heavy decoration.
+7. Keep controls stable: dynamic text must not resize the layout badly.
+8. If a chip or label can vary in length, use `auto minmax(0, 1fr)`, `white-space: nowrap`, and measured gaps.
+
+For left navigation specifically:
 
 ```text
-wrapping MCQ text
-large touch targets
-stacked controls on small screens
-no horizontal overflow
-textarea font size >= 16px
+tocData is generated from headings in journal.md
+toc.innerHTML renders the visible nav
+.toc-link, .toc-kicker, .toc-title control hierarchy
+IntersectionObserver updates active links
 ```
 
-## First Ship Teaching Loop
+If a nav chip overflows, the usual root cause is a fixed grid column that is too narrow. Prefer content-sized columns:
 
-The journal now starts with GitHub Pages because learners need an early public win.
-
-Teach this path:
-
-```text
-index.html -> git commit -> git push -> GitHub Pages source -> public URL
+```css
+grid-template-columns: auto minmax(0, 1fr);
 ```
 
-For the simplest project:
+## Route D: Add A Standalone Page
+
+Use this route for pitch pages, demos, diagrams, or extra artifacts.
+
+1. Add the standalone file beside `index.html`, for example:
 
 ```text
-index.html at repo root
-.nojekyll at repo root
-Pages source: Deploy from a branch
+if-may-pitch.html
+```
+
+2. Link to it from `build_journal_html.py`, not directly in `index.html`.
+3. Use a normal relative link so GitHub Pages serves it:
+
+```html
+<a href="if-may-pitch.html" target="_blank" rel="noopener">Pitch</a>
+```
+
+4. If replacing an existing nav action, remove dead JS and hidden inputs too.
+5. Update `release_check.py` if the new link/page is a release promise.
+6. Validate both `index.html` and the standalone page parse.
+
+## Route E: Update Release Checks
+
+Use `release_check.py` to lock in important promises:
+
+```text
+required controls exist
+new page links exist
+important CSS hooks exist
+content sections render
+code cards render
+knowledge links render
+visual cards render
+embedded JS parses
+artifact is not suspiciously small
+```
+
+When a feature becomes part of the product, add a small required snippet. Do not add overly fragile checks for incidental wording unless the user explicitly needs that wording protected.
+
+## Route F: Validate
+
+Run these after content, UI, quiz, release-check, or standalone-page changes:
+
+```bash
+python3 build_journal_html.py
+cp journal.md programing-language.md
+python3 release_check.py
+python3 -m py_compile build_journal_html.py release_check.py
+```
+
+If `programing-language.md` is absent in a new clone, skip the copy or create the editor copy intentionally.
+
+Validate embedded JavaScript:
+
+```bash
+node - <<'NODE'
+const fs = require('fs');
+const html = fs.readFileSync('index.html', 'utf8');
+const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]);
+for (const script of scripts) new Function(script);
+console.log('script-syntax-ok', scripts.length);
+NODE
+```
+
+Validate standalone pages parse:
+
+```bash
+python3 - <<'PY'
+from html.parser import HTMLParser
+from pathlib import Path
+for name in ["index.html", "if-may-pitch.html"]:
+    if Path(name).exists():
+        HTMLParser().feed(Path(name).read_text(encoding="utf-8"))
+        print("html-parse-ok", name)
+PY
+```
+
+For UI work, use browser geometry checks when possible. Minimum checks:
+
+```text
+desktop width around 1280px
+phone width around 390px
+narrow phone width around 320px for nav/chips/buttons
+documentElement.scrollWidth <= clientWidth
+important buttons/chips have no text overflow
+```
+
+## Route G: Publish
+
+Before publishing:
+
+```bash
+git status --short --branch
+git diff --stat
+```
+
+Stage only in-scope files. Common examples:
+
+```bash
+git add journal.md programing-language.md build_journal_html.py index.html release_check.py SKILL.md
+git add if-may-pitch.html
+git commit -m "<clear message>"
+git push origin main
+```
+
+After pushing, verify:
+
+```bash
+git status --short --branch
+git rev-parse --short HEAD
+```
+
+Check raw GitHub first when Pages may be stale:
+
+```bash
+curl -L --max-time 20 -s "https://raw.githubusercontent.com/eight-atulya/thinking-in-code-journal/main/index.html" | rg "Expected new phrase"
+```
+
+Then check GitHub Pages with cache busting:
+
+```bash
+curl -L --max-time 20 -s "https://eight-atulya.github.io/thinking-in-code-journal/?v=<commit>" | rg "Expected new phrase"
+```
+
+For standalone pages:
+
+```bash
+curl -L --max-time 20 -s "https://eight-atulya.github.io/thinking-in-code-journal/if-may-pitch.html?v=<commit>" | rg "Expected pitch phrase"
+```
+
+GitHub Pages can serve old content for several minutes. A pushed commit can be correct while the public edge cache is still catching up.
+
+## Route H: Start A New Journal From This Pattern
+
+For a new repo or new learner journal:
+
+1. Create the source manuscript:
+
+```text
+journal.md
+```
+
+2. Create the renderer:
+
+```text
+build_journal_html.py
+```
+
+Minimum renderer responsibilities:
+
+```text
+read journal.md
+parse markdown headings, paragraphs, lists, tables, code fences
+generate a table of contents
+render sections/cards
+emit one self-contained index.html
+embed CSS and JS
+embed raw markdown only if Source view is wanted
+add copy buttons for code blocks
+add mobile menu behavior
+add print CSS
+```
+
+3. Create the release guard:
+
+```text
+release_check.py
+```
+
+Minimum release checks:
+
+```text
+index.html exists
+journal.md exists
+HTML parser accepts artifact
+embedded JS syntax is valid
+key controls exist
+section count is plausible
+artifact is larger than source when expected
+no accidental missing learning blocks
+```
+
+4. Add GitHub Pages basics:
+
+```text
+index.html
+.nojekyll
+```
+
+5. Configure Pages:
+
+```text
+Repository -> Settings -> Pages
+Source: Deploy from a branch
 Branch: main
 Folder: / (root)
 ```
 
-Explain that GitHub Pages looks for:
+6. First publish loop:
 
-```text
-index.html
-index.md
-README.md
+```bash
+python3 build_journal_html.py
+python3 release_check.py
+git add .
+git commit -m "Publish first journal"
+git push origin main
 ```
 
-at the top of the publishing source.
+## Debugging Map
+
+Use symptoms to find the layer:
+
+```text
+Words wrong                         -> journal.md
+Generated HTML missing new content   -> rebuild did not run or wrong file edited
+Public site old after push           -> GitHub Pages cache; check raw GitHub
+Button exists but does nothing       -> JS listener id mismatch
+Release check fails missing snippet  -> feature renamed; update check intentionally
+Phone has sideways scroll            -> CSS width, fixed grid column, long text, pre/table overflow
+Chip text overlaps title             -> fixed chip column too small; use auto minmax(0, 1fr)
+Copy button misaligned               -> code-card header layout; inspect .code-card-head
+Brain Check broken on mobile         -> summary/check-body grid/flex rules
+TOC confusing                        -> nav hierarchy, level labels, spacing, active state
+Standalone page 404                  -> file not committed or wrong relative link
+```
+
+## Voice Rules
+
+The user's preferred explanation style is concrete and execution-first.
+
+Prefer:
+
+```text
+where does it start?
+what gets checked first?
+what input enters?
+what state changes?
+what task gets scheduled?
+what happens in the if branch?
+what happens in the else branch?
+what can fail?
+how do we verify reality?
+```
+
+Avoid:
+
+```text
+vague inspiration
+long poetic buildup
+abstract claims without operational consequence
+generic AI enthusiasm
+```
 
 ## Release Quality Bar
 
-Before calling a change done:
+Do not call the task done until:
 
-1. `release_check.py` passes.
-2. Embedded script syntax passes.
-3. `journal.md` and `programing-language.md` are synced.
-4. `index.html` is regenerated.
-5. New content has a real learner action.
-6. New content has memory and transfer support.
-7. GitHub Pages is checked after push, or caching delay is reported honestly.
+1. Source file is edited, not only generated artifact.
+2. `index.html` is regenerated.
+3. `release_check.py` passes.
+4. Embedded JS syntax passes.
+5. Python files compile.
+6. `journal.md` and `programing-language.md` are synced when both exist.
+7. UI changes have a phone and desktop sanity check.
+8. Public or raw GitHub verification is reported when publishing.
+9. Git worktree state is clean after publish, unless explicitly left dirty.
 
-## Useful Public URL
+## Useful URLs
 
 ```text
+Main site:
 https://eight-atulya.github.io/thinking-in-code-journal/
-```
 
-Use a query string when checking fresh deployments:
-
-```text
+Cache-busted main site:
 https://eight-atulya.github.io/thinking-in-code-journal/?v=<commit>
-```
 
+Pitch page:
+https://eight-atulya.github.io/thinking-in-code-journal/if-may-pitch.html
+
+Cache-busted pitch page:
+https://eight-atulya.github.io/thinking-in-code-journal/if-may-pitch.html?v=<commit>
+```
