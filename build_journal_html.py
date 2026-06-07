@@ -570,11 +570,17 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
     th {{ text-align: left; color: var(--yellow); background: rgba(255,210,31,.08); }}
     .code-card {{ margin: 24px 0; border: 1px solid var(--line); border-radius: var(--radius); background: #050505; overflow: hidden; }}
     .code-card-head {{
-      display: flex; align-items: center; justify-content: space-between; gap: 12px;
-      padding: 10px 12px; border-bottom: 1px solid var(--line);
+      display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px;
+      min-height: 48px; padding: 7px 10px 7px 12px; border-bottom: 1px solid var(--line);
     }}
-    .code-card figcaption {{ padding: 0; color: var(--yellow); font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; }}
-    .copy-code {{ position: static; flex: 0 0 auto; padding: 6px 10px; font-size: .78rem; line-height: 1; min-height: 34px; }}
+    .code-card figcaption {{
+      min-width: 0; padding: 0; color: var(--yellow); font-size: .78rem; font-weight: 900;
+      text-transform: uppercase; letter-spacing: .06em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }}
+    .copy-code {{
+      position: static; display: inline-flex; align-items: center; justify-content: center;
+      min-width: 60px; min-height: 36px; padding: 0 10px; font-size: .78rem; line-height: 1;
+    }}
     pre {{ margin: 0; overflow: auto; padding: 18px; line-height: 1.5; min-width: 0; }}
     pre code {{ background: transparent; color: #f7f7f7; padding: 0; }}
     .visual-card {{ border: 1px solid var(--line); border-radius: var(--radius); background: linear-gradient(135deg, rgba(255,45,45,.12), rgba(255,210,31,.08)); margin: 24px 0; padding: 18px; }}
@@ -609,17 +615,19 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
       max-width: 100%;
     }}
     .learning-check summary {{
-      cursor: pointer; padding: 14px 16px; list-style: none; display: flex; align-items: center;
-      gap: 12px; font-weight: 900; min-width: 0; background: rgba(255,255,255,.03);
+      cursor: pointer; padding: 12px 14px; min-height: 54px; list-style: none;
+      display: grid; grid-template-columns: minmax(0, 1fr) auto 18px; align-items: center; gap: 10px;
+      font-weight: 900; min-width: 0; background: rgba(255,255,255,.035);
     }}
     .learning-check summary::-webkit-details-marker {{ display: none; }}
+    .learning-check summary:focus-visible {{ outline: 3px solid rgba(255,210,31,.28); outline-offset: -3px; }}
     .learning-check summary::after {{
-      content: "⌄"; margin-left: auto; color: var(--yellow); font-size: 1.1rem; line-height: 1;
+      content: "⌄"; color: var(--yellow); font-size: 1.05rem; line-height: 1; text-align: center;
       transition: transform .18s ease;
     }}
     .learning-check[open] summary::after {{ transform: rotate(180deg); }}
     .learning-check summary span {{
-      margin-left: auto; display: inline-flex; align-items: center; justify-content: center;
+      display: inline-flex; align-items: center; justify-content: center;
       color: var(--yellow); font-size: .8rem; text-transform: uppercase; white-space: nowrap;
       padding: 4px 9px; border-radius: 999px; border: 1px solid rgba(255,210,31,.24);
       background: rgba(255,210,31,.08);
@@ -678,8 +686,8 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
       .section-toggle {{ position: static; margin: 14px 0 0 14px; }}
       .knowledge-link {{ grid-template-columns: 1fr; }}
       .knowledge-arrow {{ text-align: center; transform: rotate(90deg); }}
-      .learning-check {{ margin-top: 24px; border-left: 0; border-right: 0; border-radius: 0; }}
-      .learning-check summary {{ padding: 13px 12px; gap: 8px; }}
+      .learning-check {{ margin-top: 22px; border-radius: var(--radius); }}
+      .learning-check summary {{ padding: 11px 12px; min-height: 52px; gap: 8px; }}
       .learning-check summary span {{ font-size: .68rem; line-height: 1.2; padding: 4px 8px; }}
       .check-body {{ padding: 0 10px 12px; gap: 10px; }}
       .check-stage {{ padding: 12px; }}
@@ -695,10 +703,9 @@ def build_html(rendered: str, toc: list[dict[str, str]], raw_md: str, version: s
     }}
     @media (max-width: 430px) {{
       .entry-inner {{ padding-left: 12px; padding-right: 12px; }}
-      .learning-check {{ margin-left: -12px; margin-right: -12px; }}
       .confidence-row {{ grid-template-columns: 1fr; }}
-      .code-card-head {{ align-items: flex-start; flex-direction: column; }}
-      .copy-code {{ align-self: flex-end; }}
+      .code-card-head {{ min-height: 46px; padding-inline: 10px; }}
+      .copy-code {{ min-width: 56px; min-height: 34px; }}
     }}
     @media print {{
       body {{ background: #fff; color: #000; }}
