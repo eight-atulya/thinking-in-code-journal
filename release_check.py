@@ -16,7 +16,8 @@ GENERATOR = ROOT / "build_journal_html.py"
 REQUIRED_SNIPPETS = [
     "Recall Score",
     "exportProgress",
-    "importProgress",
+    "if-may-pitch.html",
+    "pitch-link",
     "dueFilter",
     "printPage",
     "@media print",

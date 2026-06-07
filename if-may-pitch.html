@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>EightEngine — Series A</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#080808;
+  --surface:#0f0f0f;
+  --surface2:#141414;
+  --border:#1e1e1e;
+  --border2:#2a2a2a;
+  --white:#f0f0f0;
+  --dim:rgba(240,240,240,0.52);
+  --dim2:rgba(240,240,240,0.28);
+  --red:#E8000D;
+  --yellow:#FFD60A;
+}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Space Grotesk',sans-serif;
+  background:var(--bg);color:var(--white);
+  overflow-x:hidden;-webkit-font-smoothing:antialiased;
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;width:100%;z-index:100;
+  background:rgba(8,8,8,0.92);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 6vw;height:52px;
+}
+.logo{font-size:15px;font-weight:700;letter-spacing:-0.3px;}
+.logo .r{color:var(--red);}
+.logo .y{color:var(--yellow);}
+.nav-links{list-style:none;display:flex;gap:24px;align-items:center;}
+.nav-links li a{
+  text-decoration:none;font-size:11px;font-weight:500;
+  color:var(--dim);transition:color .2s;
+}
+.nav-links li a:hover{color:var(--white);}
+.nav-cta{
+  font-size:10px!important;font-weight:700!important;
+  color:var(--bg)!important;background:var(--yellow);
+  padding:6px 14px;letter-spacing:1px;text-transform:uppercase;
+  border:none;
+}
+/* hamburger for mobile */
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--white);transition:all .3s;}
+.mobile-menu{
+  display:none;position:fixed;top:52px;left:0;right:0;
+  background:rgba(8,8,8,0.97);border-bottom:1px solid var(--border);
+  padding:20px 6vw;z-index:99;flex-direction:column;gap:0;
+}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{
+  text-decoration:none;font-size:14px;font-weight:500;
+  color:var(--dim);padding:14px 0;border-bottom:1px solid var(--border);
+  display:block;
+}
+.mobile-menu a:last-child{border-bottom:none;color:var(--yellow);font-weight:700;}
+
+/* ── ATTENTION SLIDES ── */
+.attn{
+  min-height:100vh;min-height:100dvh;
+  display:flex;flex-direction:column;
+  justify-content:center;
+  position:relative;overflow:hidden;
+  padding:80px 6vw 60px;
+}
+#s1{background:var(--red);}
+#s1 .snum{color:rgba(0,0,0,0.2);}
+#s1 h1{color:#fff;}
+#s1 .sl{color:rgba(255,255,255,0.65);}
+#s1 .ctag{border-color:rgba(255,255,255,0.2);color:rgba(255,255,255,0.35);}
+
+#s2{background:var(--bg);}
+#s2::before{
+  content:'';position:absolute;top:-150px;right:-80px;
+  width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,214,10,0.07) 0%,transparent 70%);
+  pointer-events:none;
+}
+#s2 h1 em{font-style:normal;color:var(--yellow);}
+#s2 .snum{color:var(--border2);}
+#s2 .sl{color:var(--dim);}
+
+#s3{background:var(--surface);}
+#s3 h1 em{font-style:normal;color:var(--red);}
+#s3 .snum{color:var(--border2);}
+#s3 .sl{color:var(--dim);}
+
+#s4{background:var(--yellow);}
+#s4 .snum{color:rgba(0,0,0,0.18);}
+#s4 h1{color:var(--bg);}
+#s4 h1 em{font-style:normal;color:var(--red);}
+#s4 .sl{color:rgba(0,0,0,0.5);}
+#s4 .ctag{border-color:rgba(0,0,0,0.15);color:rgba(0,0,0,0.3);}
+
+.snum{
+  font-size:10px;font-weight:700;letter-spacing:4px;
+  text-transform:uppercase;margin-bottom:40px;
+  display:flex;align-items:center;gap:10px;
+}
+.snum::after{content:'';width:28px;height:1px;background:currentColor;opacity:0.35;}
+.attn h1{
+  font-size:clamp(42px,8vw,100px);
+  font-weight:700;line-height:1.0;letter-spacing:-2.5px;
+  margin-bottom:28px;
+}
+.sl{font-size:clamp(13px,1.8vw,16px);font-weight:400;max-width:480px;line-height:1.75;}
+.ctag{
+  position:absolute;bottom:32px;right:6vw;
+  font-size:9px;font-weight:600;letter-spacing:2.5px;
+  text-transform:uppercase;border:1px solid var(--border2);
+  color:var(--dim2);padding:5px 12px;
+}
+
+/* ── STD SECTION ── */
+.std{padding:100px 6vw;display:flex;flex-direction:column;}
+
+.eyebrow{
+  font-size:10px;font-weight:700;letter-spacing:4px;
+  text-transform:uppercase;color:var(--red);
+  margin-bottom:20px;display:flex;align-items:center;gap:10px;
+}
+.eyebrow::after{content:'';width:24px;height:1px;background:var(--red);}
+.eyebrow.ye{color:var(--yellow);}
+.eyebrow.ye::after{background:var(--yellow);}
+
+h2{
+  font-size:clamp(32px,5vw,62px);
+  font-weight:700;line-height:1.05;letter-spacing:-2px;
+  margin-bottom:16px;
+}
+h2 em{font-style:normal;color:var(--red);}
+h2 em.y{color:var(--yellow);}
+.sub{
+  font-size:clamp(14px,1.6vw,16px);font-weight:300;line-height:1.8;
+  color:var(--dim);max-width:580px;margin-bottom:48px;
+}
+
+/* ── SOLUTION ── */
+.solution-wrap{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:80px;align-items:start;
+}
+.steps{display:flex;flex-direction:column;}
+.step{
+  padding:28px 0;border-bottom:1px solid var(--border);
+  display:flex;gap:24px;align-items:flex-start;
+}
+.step:first-child{border-top:1px solid var(--border);}
+.step-num{font-size:10px;font-weight:700;color:var(--yellow);letter-spacing:2px;min-width:26px;flex-shrink:0;padding-top:3px;}
+.step h4{font-size:14px;font-weight:700;margin-bottom:6px;letter-spacing:-0.2px;}
+.step p{font-size:12px;font-weight:300;color:var(--dim);line-height:1.8;}
+
+/* ── CONTRADICTION MOAT ── */
+#contradiction{background:var(--red);}
+#contradiction .eyebrow{color:rgba(255,255,255,0.55);}
+#contradiction .eyebrow::after{background:rgba(255,255,255,0.4);}
+#contradiction h2{color:#fff;}
+#contradiction .sub{color:rgba(255,255,255,0.68);}
+.contra-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:rgba(255,255,255,0.15);
+  border:1px solid rgba(255,255,255,0.15);
+}
+.contra-card{
+  background:rgba(0,0,0,0.3);padding:40px 32px;
+  display:flex;flex-direction:column;gap:14px;
+  backdrop-filter:blur(8px);
+}
+.contra-num{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--yellow);text-transform:uppercase;}
+.contra-card h3{font-size:17px;font-weight:700;letter-spacing:-0.5px;color:#fff;}
+.contra-card p{font-size:13px;font-weight:300;color:rgba(255,255,255,0.62);line-height:1.8;}
+.contra-stat{
+  font-size:11px;font-weight:600;color:var(--yellow);
+  letter-spacing:1px;margin-top:4px;
+}
+
+/* ── MOAT ── */
+.moat-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--border2);border:1px solid var(--border2);
+}
+.moat-card{
+  background:var(--surface2);padding:44px 32px;
+  display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden;
+}
+.moat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--border2);}
+.moat-card.r::before{background:var(--red);}
+.moat-card.y::before{background:var(--yellow);}
+.year-label{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--dim2);}
+.moat-card.r .year-label{color:var(--red);}
+.moat-card.y .year-label{color:var(--yellow);}
+.moat-card h3{font-size:20px;font-weight:700;letter-spacing:-0.8px;}
+.moat-card p{font-size:12px;font-weight:300;color:var(--dim);line-height:1.85;}
+
+/* ── COMPARE ── */
+.compare-table{width:100%;border-collapse:collapse;border:1px solid var(--border2);}
+.compare-table th{
+  padding:16px 22px;text-align:left;
+  font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--dim2);background:var(--surface);border-bottom:1px solid var(--border2);
+}
+.compare-table th.good{color:var(--yellow);}
+.compare-table td{
+  padding:20px 22px;font-size:13px;font-weight:300;
+  color:var(--dim);border-bottom:1px solid var(--border);
+  vertical-align:top;line-height:1.65;
+}
+.compare-table td:first-child{font-weight:600;color:var(--white);font-size:12px;width:160px;}
+.compare-table td.good{color:var(--white);font-weight:400;}
+.compare-table tr:last-child td{border-bottom:none;}
+
+/* ── TRACTION ── */
+.metrics{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:1px;background:var(--border2);border:1px solid var(--border2);
+}
+.metric-block{
+  background:var(--bg);padding:40px 24px;
+  display:flex;flex-direction:column;gap:10px;
+}
+.big{font-size:clamp(36px,4vw,56px);font-weight:700;letter-spacing:-2px;line-height:1;}
+.big.re{color:var(--red);}
+.big.ye{color:var(--yellow);}
+.metric-label{font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--dim2);}
+
+/* ── MARKET ── */
+.market-layout{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+.rings-wrap{display:flex;flex-direction:column;gap:1px;background:var(--border2);border:1px solid var(--border2);}
+.ring-row{
+  background:var(--surface);
+  display:grid;grid-template-columns:64px 1fr 100px;
+  align-items:center;gap:16px;padding:22px 24px;
+}
+.ring-row.active{background:var(--red);}
+.ring-tag{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--dim2);}
+.ring-row.active .ring-tag{color:rgba(255,255,255,0.55);}
+.ring-desc{font-size:12px;font-weight:300;color:var(--dim);}
+.ring-row.active .ring-desc{color:rgba(255,255,255,0.8);}
+.ring-val{font-size:20px;font-weight:700;text-align:right;letter-spacing:-1px;}
+.market-note{display:flex;flex-direction:column;gap:22px;}
+.market-note blockquote{
+  font-size:17px;font-weight:600;line-height:1.55;
+  letter-spacing:-0.2px;border-left:3px solid var(--yellow);
+  padding-left:20px;color:var(--white);
+}
+.market-note p{font-size:13px;font-weight:300;color:var(--dim);line-height:1.85;}
+
+/* ── MODEL ── */
+.model-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--border2);border:1px solid var(--border2);
+}
+.model-card{background:var(--surface2);padding:40px 32px;display:flex;flex-direction:column;gap:14px;}
+.stream-label{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--yellow);}
+.model-card h3{font-size:17px;font-weight:700;letter-spacing:-0.5px;}
+.price{font-size:26px;font-weight:700;letter-spacing:-1px;}
+.price span{font-size:13px;font-weight:400;color:var(--dim);}
+.model-card p{font-size:12px;font-weight:300;color:var(--dim);line-height:1.8;}
+.pill{
+  display:inline-block;font-size:9px;font-weight:700;
+  letter-spacing:2px;text-transform:uppercase;
+  padding:4px 10px;border:1px solid var(--border2);
+  color:var(--dim2);align-self:flex-start;
+}
+.pill.r{border-color:var(--red);color:var(--red);}
+.pill.y{border-color:var(--yellow);color:var(--yellow);}
+
+/* ── TEAM ── */
+.team-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:1px;background:var(--border2);border:1px solid var(--border2);
+}
+.team-card{background:var(--surface);padding:44px 36px;display:flex;flex-direction:column;}
+.avatar{
+  width:48px;height:48px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;font-weight:700;
+  margin-bottom:24px;
+}
+.av-y{background:var(--yellow);color:var(--bg);}
+.av-r{background:var(--red);color:#fff;}
+.team-card h3{font-size:18px;font-weight:700;margin-bottom:4px;letter-spacing:-0.3px;}
+.team-role{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:18px;}
+.team-card p{font-size:13px;font-weight:300;color:var(--dim);line-height:1.85;}
+
+/* ── ASK ── */
+#ask{
+  min-height:100vh;min-height:100dvh;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  text-align:center;padding:100px 6vw;
+  background:var(--red);position:relative;overflow:hidden;
+}
+#ask::before{
+  content:'';position:absolute;
+  bottom:-180px;left:50%;transform:translateX(-50%);
+  width:700px;height:700px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,214,10,0.18) 0%,transparent 65%);
+  pointer-events:none;
+}
+.ask-inner{max-width:680px;margin:0 auto;position:relative;z-index:1;}
+#ask .eyebrow{color:rgba(255,255,255,0.5);justify-content:center;}
+#ask .eyebrow::after{background:rgba(255,255,255,0.35);}
+#ask h2{color:#fff;letter-spacing:-3px;margin-bottom:18px;}
+#ask h2 em{font-style:normal;color:var(--yellow);}
+#ask .sub{color:rgba(255,255,255,0.65);max-width:460px;margin:0 auto 44px;text-align:center;}
+.funds{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:rgba(255,255,255,0.12);
+  border:1px solid rgba(255,255,255,0.12);margin-bottom:44px;text-align:left;
+}
+.fund-block{background:rgba(0,0,0,0.28);padding:28px 22px;}
+.pct{font-size:32px;font-weight:700;letter-spacing:-2px;color:var(--yellow);margin-bottom:6px;}
+.fund-label{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:8px;}
+.fund-block p{font-size:11px;font-weight:300;color:rgba(255,255,255,0.55);line-height:1.7;}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  cursor:pointer;border:none;padding:13px 26px;
+  font-family:'Space Grotesk',sans-serif;transition:all .2s;
+}
+.btn-y{background:var(--yellow);color:var(--bg);}
+.btn-y:hover{opacity:0.88;}
+.btn-gw{background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.3);}
+.btn-gw:hover{border-color:rgba(255,255,255,0.7);}
+.closing{font-size:13px;font-weight:400;color:rgba(255,255,255,0.45);margin-top:36px;font-style:italic;}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--bg);border-top:1px solid var(--border);
+  padding:20px 6vw;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+}
+footer span{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim2);}
+footer a{font-size:11px;color:var(--dim2);text-decoration:none;}
+footer a:hover{color:var(--yellow);}
+
+/* ═══════ MOBILE ═══════ */
+@media(max-width:768px){
+  nav{padding:0 5vw;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+
+  .attn{padding:80px 5vw 56px;}
+  .attn h1{letter-spacing:-1.5px;}
+  .ctag{display:none;}
+
+  .std{padding:80px 5vw;}
+
+  .solution-wrap{grid-template-columns:1fr;gap:40px;}
+
+  .contra-grid{grid-template-columns:1fr;}
+
+  .moat-grid{grid-template-columns:1fr;}
+
+  .compare-table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .compare-table td:first-child{width:110px;min-width:110px;}
+
+  .metrics{grid-template-columns:1fr 1fr;}
+
+  .market-layout{grid-template-columns:1fr;gap:40px;}
+
+  .model-grid{grid-template-columns:1fr;}
+
+  .team-grid{grid-template-columns:1fr;}
+
+  .funds{grid-template-columns:1fr;}
+
+  footer{flex-direction:column;text-align:center;}
+
+  h2{letter-spacing:-1.5px;}
+}
+
+@media(max-width:400px){
+  .attn h1{font-size:38px;letter-spacing:-1px;}
+  .metrics{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Eight<span class="r">Engine</span><span class="y">.</span></div>
+  <ul class="nav-links">
+    <li><a href="#s1">Problem</a></li>
+    <li><a href="#solution">Solution</a></li>
+    <li><a href="#contradiction">Moat</a></li>
+    <li><a href="#market">Market</a></li>
+    <li><a href="#team">Team</a></li>
+    <li><a href="#ask" class="nav-cta">The Ask</a></li>
+  </ul>
+  <div class="hamburger" onclick="toggleMenu()" id="hbg">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+<div class="mobile-menu" id="mob">
+  <a href="#s1" onclick="closeMenu()">Problem</a>
+  <a href="#solution" onclick="closeMenu()">Solution</a>
+  <a href="#contradiction" onclick="closeMenu()">The Moat</a>
+  <a href="#market" onclick="closeMenu()">Market</a>
+  <a href="#team" onclick="closeMenu()">Team</a>
+  <a href="#ask" onclick="closeMenu()">The Ask →</a>
+</div>
+
+<!-- ══════════════════════════
+     4 ATTENTION SLIDES
+══════════════════════════ -->
+
+<section class="attn" id="s1">
+  <div class="snum">01 &nbsp; The Loss</div>
+  <h1>Every time someone<br/>leaves your company,<br/>they take your<br/>company with them.</h1>
+  <p class="sl">Your best engineer. Your top sales lead. Your most experienced ops head.<br/>Gone — and so is everything they knew.</p>
+  <div class="ctag">EightEngine &nbsp;·&nbsp; Series A 2026</div>
+</section>
+
+<section class="attn" id="s2">
+  <div class="snum">02 &nbsp; The Waste</div>
+  <h1>Your company is solving<br/>the same problems<br/><em>over and over.</em><br/>Nobody built the<br/>brain that remembers.</h1>
+  <p class="sl">Every quarter, the same fires. The same mistakes. The same questions answered from scratch. The cost is invisible — until you add it up.</p>
+  <div class="ctag">EightEngine &nbsp;·&nbsp; Series A 2026</div>
+</section>
+
+<section class="attn" id="s3">
+  <div class="snum">03 &nbsp; The Truth</div>
+  <h1>Your best people leave.<br/>Your <em>AI agents forget.</em><br/>Your organisation<br/>starts from zero.<br/>Every time.</h1>
+  <p class="sl">Three facts. Each one costs you millions. Together, they are why your AI investment never delivers what it promised.</p>
+  <div class="ctag">EightEngine &nbsp;·&nbsp; Series A 2026</div>
+</section>
+
+<section class="attn" id="s4">
+  <div class="snum">04 &nbsp; The Fix</div>
+  <h1>Organisations forget<br/>everything.<br/><em>EightEngine</em><br/>fixes that.</h1>
+  <p class="sl">One brain. Every human. Every AI agent. All connected. Always learning. Never forgets.</p>
+  <div class="ctag">EightEngine &nbsp;·&nbsp; Series A 2026</div>
+</section>
+
+<!-- ══════════════════════════
+     SOLUTION
+══════════════════════════ -->
+<section class="std" id="solution" style="background:var(--bg);">
+  <div class="solution-wrap">
+    <div>
+      <div class="eyebrow ye">05 &nbsp; The Solution</div>
+      <h2>The permanent<br/>intelligence layer<br/>your org <em class="y">never had.</em></h2>
+      <p class="sub">EightEngine connects every human and every AI agent into one unified brain. Learns continuously. Preserves knowledge permanently. Compounds in value every single day.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <button class="btn btn-y">Live Demo &nbsp;→</button>
+        <button class="btn btn-gw" style="border:1px solid var(--border2);color:var(--white);">Download Deck</button>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div>
+          <h4>Connect — One Layer Across Everything</h4>
+          <p>Plug in existing agents, tools, and workflows. EightEngine builds a unified intelligence layer across all of them. No re-architecture. No rip and replace.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div>
+          <h4>Learn — Absorbs Everything. Forgets Nothing.</h4>
+          <p>Every decision, every outcome, every lesson — captured permanently. When your best engineer leaves, their knowledge stays. When an agent upgrades, its context carries forward.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div>
+          <h4>Detect — Catches Contradictions Before They Cost You</h4>
+          <p>EightEngine monitors every agent and human decision in real time. The moment two parts of the org conflict — a pricing decision contradicts a supply chain call, a policy conflicts with a live agent action — it flags it instantly, before it becomes a crisis.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div>
+          <h4>Govern — Coordinates in Real Time</h4>
+          <p>Routes tasks to the right agent or human, resolves conflicts before they surface, prevents redundant or contradictory actions across the entire workforce — AI and human alike.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">05</div>
+        <div>
+          <h4>Compound — Gets Smarter Every Day</h4>
+          <p>Year 1: decisions 10× faster. Year 3: institutional knowledge no competitor can replicate. Year 5: your organisation's intelligence is your single biggest competitive asset.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════
+     CONTRADICTION MOAT
+══════════════════════════ -->
+<section class="std" id="contradiction" style="background:var(--red);">
+  <div class="eyebrow">06 &nbsp; The Contradiction Engine</div>
+  <h2 style="color:#fff;">The moat nobody<br/>else has built.</h2>
+  <p class="sub" style="color:rgba(255,255,255,0.65);max-width:620px;">
+    Every organisation is silently bleeding from internal contradictions — decisions made by different teams, agents, and systems that directly conflict with each other. Nobody sees them until millions are lost. EightEngine sees them in real time.
+  </p>
+  <div class="contra-grid">
+    <div class="contra-card">
+      <div class="contra-num">C — 01</div>
+      <h3>Agent vs Agent Conflict</h3>
+      <p>Your customer service agent promises a 2-day delivery. Your supply chain agent already flagged a 5-day delay. Nobody catches it. The customer is furious. EightEngine catches it in milliseconds — before the promise is made.</p>
+      <div class="contra-stat">↓ Saves: avg $240K per enterprise annually</div>
+    </div>
+    <div class="contra-card">
+      <div class="contra-num">C — 02</div>
+      <h3>Policy vs Action Contradiction</h3>
+      <p>A new compliance policy is issued. Three AI agents are still operating under the old rule. Nobody updated them. A regulator audit finds it six months later. EightEngine propagates policy changes to every agent the moment they are set.</p>
+      <div class="contra-stat">↓ Saves: avg $1.2M in regulatory exposure</div>
+    </div>
+    <div class="contra-card">
+      <div class="contra-num">C — 03</div>
+      <h3>Human vs AI Contradiction</h3>
+      <p>A senior manager makes a strategic call. An AI agent, with no awareness of that decision, executes something that directly undermines it — three days later. EightEngine creates a shared awareness layer so humans and agents never work against each other.</p>
+      <div class="contra-stat">↓ Saves: months of wasted execution</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════
+     COMPOUNDING MOAT
+══════════════════════════ -->
+<section class="std" id="moat" style="background:var(--surface);">
+  <div class="eyebrow">07 &nbsp; The Compounding Moat</div>
+  <h2>The longer you use it,<br/><em>the harder to replace.</em></h2>
+  <p class="sub">This is not SaaS. This is infrastructure. Infrastructure compounds. Infrastructure gets acquired.</p>
+  <div class="moat-grid">
+    <div class="moat-card r">
+      <div class="year-label">Year 01</div>
+      <h3>10× Faster Decisions</h3>
+      <p>The brain already knows your context. Problems that took days resolve in hours. New hires and agents onboard in hours — not months. Contradictions caught before they land.</p>
+    </div>
+    <div class="moat-card y">
+      <div class="year-label">Year 03</div>
+      <h3>Knowledge Nobody Can Steal</h3>
+      <p>Three years of decisions, lessons, and contradiction-catches encoded in your EightEngine. No competitor can replicate it. No acqui-hire can extract it. It belongs to you and grows only with you.</p>
+    </div>
+    <div class="moat-card">
+      <div class="year-label">Year 05</div>
+      <h3>Intelligence as Competitive Asset</h3>
+      <p>Your EightEngine becomes the most valuable asset on your balance sheet — more valuable than your product, your brand, or your team. Because it is the accumulated intelligence of all three, unified.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════
+     COMPARE
+══════════════════════════ -->
+<section class="std" id="compare" style="background:var(--bg);">
+  <div class="eyebrow ye">08 &nbsp; Before vs After</div>
+  <h2>The world changes<br/>when you add <em class="y">a brain.</em></h2>
+  <p class="sub">"EightEngine is the first time an organisation never has to learn the same lesson twice."</p>
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Without EightEngine</th>
+        <th class="good">With EightEngine</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Knowledge</td>
+        <td>Lives in heads. Lost when people leave.</td>
+        <td class="good">Preserved permanently. Compounds forever.</td>
+      </tr>
+      <tr>
+        <td>Contradictions</td>
+        <td>Found months later. Cost millions to fix.</td>
+        <td class="good">Caught in real time. Before they cost anything.</td>
+      </tr>
+      <tr>
+        <td>AI Agents</td>
+        <td>Isolated, context-blind, contradict each other.</td>
+        <td class="good">Unified, context-rich, self-coordinating.</td>
+      </tr>
+      <tr>
+        <td>Decision Speed</td>
+        <td>Slow — people search, ask, repeat mistakes.</td>
+        <td class="good">10× faster — the brain already knows.</td>
+      </tr>
+      <tr>
+        <td>Onboarding</td>
+        <td>Weeks to get a new hire or agent up to speed.</td>
+        <td class="good">Hours — brain transfers everything instantly.</td>
+      </tr>
+      <tr>
+        <td>AI ROI</td>
+        <td>Spending ₹10 to generate ₹2 of value.</td>
+        <td class="good">Spending ₹3 to generate ₹10. Permanently.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ══════════════════════════
+     TRACTION
+══════════════════════════ -->
+<section class="std" id="traction" style="background:var(--surface);">
+  <div class="eyebrow">09 &nbsp; Traction</div>
+  <h2>Early. Honest.<br/><em>Real signal.</em></h2>
+  <p class="sub">Pre-revenue. No vanity metrics. These are the numbers we will be held to.</p>
+  <div class="metrics">
+    <div class="metric-block">
+      <div class="big ye">3</div>
+      <div class="metric-label">Active Pilot Conversations</div>
+    </div>
+    <div class="metric-block">
+      <div class="big re">v0.1</div>
+      <div class="metric-label">Core Engine — Live</div>
+    </div>
+    <div class="metric-block">
+      <div class="big ye">₹0</div>
+      <div class="metric-label">External Capital Raised</div>
+    </div>
+    <div class="metric-block">
+      <div class="big re">18mo</div>
+      <div class="metric-label">Window Before Category Closes</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════
+     MARKET
+══════════════════════════ -->
+<section class="std" id="market" style="background:var(--bg);">
+  <div class="eyebrow ye">10 &nbsp; Market</div>
+  <h2>The window<br/><em>is now.</em></h2>
+  <div class="market-layout">
+    <div class="rings-wrap">
+      <div class="ring-row">
+        <div class="ring-tag">TAM</div>
+        <div class="ring-desc">Enterprise AI orchestration + organisational knowledge management</div>
+        <div class="ring-val">$340B</div>
+      </div>
+      <div class="ring-row">
+        <div class="ring-tag">SAM</div>
+        <div class="ring-desc">Mid-to-large enterprises actively deploying AI agents globally</div>
+        <div class="ring-val">$52B</div>
+      </div>
+      <div class="ring-row active">
+        <div class="ring-tag">SOM</div>
+        <div class="ring-desc">500 enterprise accounts × $80K ACV — Year 1–3 target</div>
+        <div class="ring-val">$40M</div>
+      </div>
+    </div>
+    <div class="market-note">
+      <blockquote>"Gartner: 70% of enterprise AI projects will fail to deliver ROI by 2027. Primary reason — no coordination, no memory, no contradiction detection. We are the direct solution."</blockquote>
+      <p>LangChain solves the developer problem. Nobody has built the layer that governs, remembers, and catches contradictions across an entire organisation. That position is EightEngine's. The window to own it is 18 months.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════
+     MODEL
+══════════════════════════ -->
+<section class="std" id="model" style="background:var(--surface);">
+  <div class="eyebrow">11 &nbsp; Business Model</div>
+  <h2>Simple.<br/><em>Scalable.</em></h2>
+  <p class="sub">Two recurring streams. Both tied directly to value delivered.</p>
+  <div class="model-grid">
+    <div class="model-card">
+      <div class="stream-label">Stream 01</div>
+      <h3>Intelligence Platform</h3>
+      <div class="price">$6,500 <span>/ mo per org</span></div>
+      <p>Flat monthly license. Scales with agent count and data volume — not seat count. More usage = more value = stronger retention.</p>
+      <span class="pill r">Primary Revenue</span>
+    </div>
+    <div class="model-card">
+      <div class="stream-label">Stream 02</div>
+      <h3>Usage Overage</h3>
+      <div class="price">$0.004 <span>/ governed action</span></div>
+      <p>Above the base tier, orgs pay per action EightEngine governs or contradiction it catches. We win exactly when — and because — they win.</p>
+      <span class="pill y">Usage-Based</span>
+    </div>
+    <div class="model-card">
+      <div class="stream-label">Stream 03</div>
+      <h3>On-Prem / Private</h3>
+      <div class="price">Custom <span>/ enterprise</span></div>
+      <p>For regulated industries and privacy-first orgs. Full EightEngine stack inside their infrastructure. No data leaves. Built for on-device and air-gapped environments.</p>
+      <span class="pill">Enterprise</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════
+     TEAM
+══════════════════════════ -->
+<section class="std" id="team" style="background:var(--bg);">
+  <div class="eyebrow ye">12 &nbsp; Team</div>
+  <h2>Built this before<br/>it was <em class="y">a category.</em></h2>
+  <p class="sub">This problem sits at the intersection of AI architecture, organisational design, and systems thinking. We have been building the primitives for years — before it was obvious.</p>
+  <div class="team-grid">
+    <div class="team-card">
+      <div class="avatar av-y">A</div>
+      <h3>Anurag Atulya</h3>
+      <div class="team-role">Founder & CEO</div>
+      <p>Built ATULYA — a production-grade AI agent framework — before agent orchestration was a recognised category. 5 years deep in LLM deployment, supply chain intelligence, and multi-agent system design at Blue Yonder. Has lived this problem from inside an enterprise and engineered the solution before anyone named the category.</p>
+    </div>
+    <div class="team-card">
+      <div class="avatar av-r">8</div>
+      <h3>EIGHT</h3>
+      <div class="team-role">Co-Founder & CTO</div>
+      <p>Deep expertise in distributed systems, memory architecture, and intelligence infrastructure at scale. The technical co-founder whose unfair advantage is knowing exactly how to build organisational memory and contradiction detection that is fast, permanent, and defensible at enterprise scale.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════
+     ASK
+══════════════════════════ -->
+<section id="ask">
+  <div class="ask-inner">
+    <div class="eyebrow" style="color:rgba(255,255,255,0.5);justify-content:center;">13 &nbsp; The Ask</div>
+    <h2>Raising<br/><em>$3M.</em></h2>
+    <p class="sub">18 months. Three measurable milestones. Each one de-risking the next round. Lead investor takes 15% equity. Board seat available.</p>
+    <div class="funds">
+      <div class="fund-block">
+        <div class="pct">45%</div>
+        <div class="fund-label">Product & Engineering</div>
+        <p>Ship EightEngine v1.0 — full memory layer, contradiction engine, agent governance, multi-tenant infra. Milestone: 5 paying pilots by Month 6.</p>
+      </div>
+      <div class="fund-block">
+        <div class="pct">35%</div>
+        <div class="fund-label">GTM & Sales</div>
+        <p>2 enterprise AEs + 1 solutions engineer. 30 accounts by Month 12. CAC target $8K. LTV:CAC of 9:1 at steady state.</p>
+      </div>
+      <div class="fund-block">
+        <div class="pct">20%</div>
+        <div class="fund-label">Infrastructure & Buffer</div>
+        <p>Compute, security audits, 3-month buffer. Series A trigger: $1M ARR + 20 enterprise accounts + negative churn.</p>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-y">Request Access &nbsp;→</button>
+      <button class="btn btn-gw">Download Full Deck</button>
+    </div>
+    <p class="closing">"EightEngine is the first time an organisation never has to learn the same lesson twice."</p>
+  </div>
+</section>
+
+<footer>
+  <span>EightEngine &nbsp;·&nbsp; Series A &nbsp;·&nbsp; 2026 &nbsp;·&nbsp; Confidential</span>
+  <a href="mailto:anurag@eightengine.ai">anurag@eightengine.ai</a>
+</footer>
+
+<script>
+function toggleMenu(){
+  var m=document.getElementById('mob');
+  m.classList.toggle('open');
+}
+function closeMenu(){
+  document.getElementById('mob').classList.remove('open');
+}
+// close menu on outside click
+document.addEventListener('click',function(e){
+  var m=document.getElementById('mob');
+  var h=document.getElementById('hbg');
+  if(!m.contains(e.target)&&!h.contains(e.target)){
+    m.classList.remove('open');
+  }
+});
+</script>
+
+</body>
+</html>

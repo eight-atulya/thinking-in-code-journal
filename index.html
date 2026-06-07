@@ -60,9 +60,17 @@
     .button-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     button, .source-link {
       border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel-2);
-      color: var(--text); padding: 9px 10px; cursor: pointer; font: inherit;
+      color: var(--text); padding: 9px 10px; cursor: pointer; font: inherit; text-decoration: none;
     }
     button:hover, .source-link:hover { border-color: var(--yellow); color: var(--yellow); }
+    .source-link {
+      display: inline-flex; align-items: center; justify-content: center; text-align: center;
+    }
+    .pitch-link {
+      border-color: rgba(255,210,31,.42);
+      background: linear-gradient(135deg, rgba(255,210,31,.16), rgba(255,45,45,.08));
+      color: var(--yellow); font-weight: 900;
+    }
     .score-panel {
       margin: 18px 0; padding: 14px; border: 1px solid rgba(255,210,31,.38);
       border-radius: var(--radius); background: linear-gradient(135deg, rgba(255,210,31,.11), rgba(255,45,45,.08));
@@ -377,13 +385,12 @@
         </div>
         <div class="button-row">
           <button id="exportProgress" type="button">Export</button>
-          <button id="importProgress" type="button">Import</button>
+          <a class="source-link pitch-link" href="if-may-pitch.html" target="_blank" rel="noopener">Pitch</a>
         </div>
         <div class="button-row">
           <button id="dueFilter" type="button">Due only</button>
           <button id="printPage" type="button">Print</button>
         </div>
-        <input id="importFile" type="file" accept="application/json" hidden>
       </div>
       <section class="score-panel" aria-label="Learning score">
         <div class="score-head"><strong>Recall Score</strong><span id="scorePercent">0%</span></div>
@@ -5938,20 +5945,6 @@ revise design</code></pre></figure>
       link.download = `thinking-in-code-progress-${journalVersion}.json`;
       link.click();
       URL.revokeObjectURL(url);
-    });
-    document.getElementById('importProgress').addEventListener('click', () => document.getElementById('importFile').click());
-    document.getElementById('importFile').addEventListener('change', async e => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-      try {
-        const payload = JSON.parse(await file.text());
-        if (!payload.learningState || typeof payload.learningState !== 'object') throw new Error('Missing learningState');
-        learningState = payload.learningState;
-        saveState();
-        location.reload();
-      } catch (error) {
-        alert('Could not import progress JSON: ' + error.message);
-      }
     });
     let dueOnly = false;
     document.getElementById('dueFilter').addEventListener('click', e => {
