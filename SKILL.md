@@ -26,6 +26,7 @@ index.html              = generated published artifact
 release_check.py        = release guard that catches broken promises
 if-may-pitch.html       = standalone pitch page linked from the journal
 programing-language.md  = local editor copy synced from journal.md when present
+modular-journal-topic-spaces = four-word topic rooms built by the same renderer
 .nojekyll               = tells GitHub Pages to serve static files plainly
 ```
 
@@ -44,6 +45,7 @@ Route E: change release promises   -> release_check.py
 Route F: validate                  -> rebuild, sync editor copy, run release and syntax checks
 Route G: publish                   -> commit, push, verify raw or Pages URL
 Route H: create a new journal      -> copy the architecture, then customize content, renderer, checks, and Pages config
+Route I: add modular topic space   -> add a four-word topic folder with one source file, then rebuild generated pages
 ```
 
 If the request says "fix the website" or "phone view is broken," inspect the rendered HTML/CSS and test with a browser-sized check before editing.
@@ -211,6 +213,47 @@ artifact is not suspiciously small
 ```
 
 When a feature becomes part of the product, add a small required snippet. Do not add overly fragile checks for incidental wording unless the user explicitly needs that wording protected.
+
+## Route I: Add Modular Topic Space
+
+Use this route when an idea deserves its own mental room but should still use the same journal renderer, search, copy buttons, source dialog, and validation system.
+
+Every new modular folder and file must have four plain words:
+
+```text
+future-firewall-decision-layer
+agentic-loops-control-cycle
+core-topic-source-file.md
+built-topic-page-file.html
+topic-space-index-file.json
+```
+
+Write only the source file by hand:
+
+```text
+modular-journal-topic-spaces/<four-word-topic-folder>/core-topic-source-file.md
+```
+
+Do not hand-edit:
+
+```text
+modular-journal-topic-spaces/<four-word-topic-folder>/built-topic-page-file.html
+```
+
+The generator builds the topic page, updates `topic-space-index-file.json`, and adds the linked topic shelf to the main `index.html`.
+
+Topic prose should use old school English:
+
+```text
+short sentences
+plain words
+clear checks
+clear state
+clear allow / deny logic
+clear next action
+```
+
+After adding a topic, run the Route F validation commands.
 
 ## Route F: Validate
 
